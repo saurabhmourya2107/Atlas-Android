@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
@@ -18,11 +19,16 @@ import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Message;
 import com.layer.sdk.messaging.MessagePart;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class ThreePartImageUtils {
@@ -59,15 +65,37 @@ public class ThreePartImageUtils {
     public static Message newThreePartImageMessage(Context context, LayerClient layerClient, Uri imageUri) throws IOException {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return newThreePartImageMessageFromUri(context, layerClient, imageUri);
-        } else {
-            Cursor cursor = context.getContentResolver().query(imageUri, new String[]{MediaStore.MediaColumns.DATA}, null, null, null);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ParcelFileDescriptor parcelFileDescriptor = null;
             try {
-                if (cursor == null || !cursor.moveToFirst()) return null;
-                File imageFile = new File(cursor.getString(0));
-                return newThreePartImageMessage(context, layerClient, imageFile);
+                parcelFileDescriptor = context.getContentResolver().openFileDescriptor(imageUri, "r");
+                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                return newThreePartImageMessageFromFileDescriptor(context, layerClient, fileDescriptor);
             } finally {
-                if (cursor != null) cursor.close();
+                if (parcelFileDescriptor != null) {
+                    parcelFileDescriptor.close();
+                }
             }
+        } else {
+            String path = getPath(context, imageUri);
+            File imageFile = new File(path);
+            return ThreePartImageUtils.newThreePartImageMessage(context, layerClient, imageFile);
+        }
+    }
+
+    private static String getPath(Context context, Uri uri) {
+        Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.Media.DATA}, null, null, null);
+
+        try {
+            if (cursor != null) {
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                cursor.moveToFirst();
+                return cursor.getString(columnIndex);
+            } else {
+                return uri.getPath();
+            }
+        } finally {
+            if (cursor != null) cursor.close();
         }
     }
 
@@ -109,7 +137,6 @@ public class ThreePartImageUtils {
         parts[PART_INDEX_INFO] = info;
         return client.newMessage(parts);
     }
-
 
     private static ExifInterface getExifData(File imageFile) throws IOException {
         if (imageFile == null) throw new IllegalArgumentException("Null image file");
@@ -167,7 +194,7 @@ public class ThreePartImageUtils {
         return client.newMessagePart(MIME_TYPE_INFO, intoString.getBytes());
     }
 
-    private static Bitmap getPreviewBitmap (BitmapFactory.Options bounds, InputStream inputStream) {
+    private static Bitmap getPreviewBitmap(BitmapFactory.Options bounds, InputStream inputStream) {
         // Determine preview size
         int[] previewDimensions = Util.scaleDownInside(bounds.outWidth, bounds.outHeight, PREVIEW_MAX_WIDTH, PREVIEW_MAX_HEIGHT);
         if (Log.isLoggable(Log.VERBOSE)) {
@@ -234,7 +261,6 @@ public class ThreePartImageUtils {
     private static Message newThreePartImageMessageFromUri(Context context, LayerClient client, @NonNull Uri uri) throws IOException {
         if (client == null) throw new IllegalArgumentException("Null LayerClient");
 
-        //InputStream inputStream = StorageAccessUtilities.getInputStreamFromUri(context, uri, MIME_TYPE_FILTER_IMAGE);
         InputStream inputStream = context.getContentResolver().openInputStream(uri);
         ExifInterface exifData = getExifData(inputStream);
 
@@ -264,6 +290,27 @@ public class ThreePartImageUtils {
         parts[PART_INDEX_PREVIEW] = preview;
         parts[PART_INDEX_INFO] = info;
         return client.newMessage(parts);
+    }
+
+    private static Message newThreePartImageMessageFromFileDescriptor(Context context, LayerClient client, @NonNull FileDescriptor fileDescriptor) throws IOException {
+        if (client == null) throw new IllegalArgumentException("Null LayerClient");
+
+        InputStream inputStream = new FileInputStream(fileDescriptor);
+        String filePath = context.getCacheDir() + "/img_" + Calendar.getInstance().getTimeInMillis();
+        writeStreamToFile(filePath, inputStream);
+        return newThreePartImageMessage(context, client, new File(filePath));
+    }
+
+    private static void writeStreamToFile(String filePath, InputStream inputStream) throws IOException {
+        OutputStream stream = new BufferedOutputStream(new FileOutputStream(filePath));
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            stream.write(buffer, 0, len);
+        }
+        if (stream != null)
+            stream.close();
     }
 
     private static int[] getOrientationData(ExifInterface exifInterface) {
