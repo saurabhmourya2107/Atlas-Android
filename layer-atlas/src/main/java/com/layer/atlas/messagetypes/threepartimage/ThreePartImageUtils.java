@@ -23,7 +23,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -219,13 +218,16 @@ public class ThreePartImageUtils {
             Log.v("Preview sampled size: " + (sampleWidth << 1) + "x" + (sampleHeight << 1));
         }
 
-        // Create preview
+        // Create previewBitmap if sample size and preview size are different
         Bitmap sampledBitmap = BitmapFactory.decodeStream(inputStream, null, previewOptions);
-        Bitmap previewBitmap = Bitmap.createScaledBitmap(sampledBitmap, previewDimensions[0], previewDimensions[1], true);
-
-        sampledBitmap.recycle();
-
-        return previewBitmap;
+        if (previewDimensions[0] != sampleWidth && previewDimensions[1] != sampleHeight) {
+            Bitmap previewBitmap = Bitmap.createScaledBitmap(sampledBitmap, previewDimensions[0], previewDimensions[1], true);
+            sampledBitmap.recycle();
+            return previewBitmap;
+        }
+        else {
+            return sampledBitmap;
+        }
     }
 
     private static MessagePart buildPreviewMessagePart(Context context, LayerClient client, InputStream inputStream,
