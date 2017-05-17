@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-  <groupId>com.layer.atlas</groupId>
+  <groupId>com.layer.ui</groupId>
   <artifactId>layer-atlas</artifactId>
   <versioning>
     <release>0.4.10</release>

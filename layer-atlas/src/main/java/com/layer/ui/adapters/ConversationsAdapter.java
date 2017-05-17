@@ -6,6 +6,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.layer.ui.avatar.AvatarView;
+import com.layer.ui.R;
+import com.layer.ui.avatar.AvatarViewModel;
+import com.layer.ui.avatar.IdentityNameFormatterImpl;
+import com.layer.ui.messagetypes.CellFactory;
+import com.layer.ui.messagetypes.generic.GenericCellFactory;
+import com.layer.ui.messagetypes.location.LocationCellFactory;
+import com.layer.ui.messagetypes.singlepartimage.SinglePartImageCellFactory;
+import com.layer.ui.messagetypes.text.TextCellFactory;
+import com.layer.ui.messagetypes.threepartimage.ThreePartImageCellFactory;
+import com.layer.ui.util.ConversationFormatter;
+import com.layer.ui.util.ConversationStyle;
+import com.layer.ui.util.IdentityRecyclerViewEventListener;
+import com.layer.ui.util.Log;
+import com.layer.ui.util.Util;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Conversation;
 import com.layer.sdk.messaging.Identity;
@@ -22,6 +37,7 @@ import com.layer.ui.conversationitem.ConversationItemFormatter;
 import com.layer.ui.util.ConversationStyle;
 import com.layer.ui.util.IdentityRecyclerViewEventListener;
 import com.layer.ui.util.Log;
+import com.layer.ui.util.imagecache.ImageCacheWrapper;
 import com.squareup.picasso.Picasso;
 
 import java.util.Collection;
@@ -48,6 +64,16 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
 
     public ConversationsAdapter(Context context, LayerClient client, Picasso picasso, Collection<String> updateAttributes, ConversationItemFormatter conversationItemFormatter) {
         mConversationItemFormatter = conversationItemFormatter;
+    protected ConversationFormatter mConversationFormatter;
+    private ImageCacheWrapper mImageCacheWrapper;
+
+    public ConversationsAdapter(Context context, LayerClient client, Picasso picasso, ConversationFormatter conversationFormatter, ImageCacheWrapper imageCacheWrapper) {
+        this(context, client, picasso, null, conversationFormatter, imageCacheWrapper);
+    }
+
+    public ConversationsAdapter(Context context, LayerClient client, Picasso picasso, Collection<String> updateAttributes, ConversationFormatter conversationFormatter, ImageCacheWrapper imageCacheWrapper) {
+        mConversationFormatter = conversationFormatter;
+        mImageCacheWrapper = imageCacheWrapper;
         Query<Conversation> query = Query.builder(Conversation.class)
                 /* Only show conversations we're still a member of */
                 .predicate(new Predicate(Conversation.Property.PARTICIPANT_COUNT, Predicate.Operator.GREATER_THAN, 1))
@@ -149,7 +175,7 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
     @Override
     public ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         UiConversationItemBinding binding = UiConversationItemBinding.inflate(mInflater, parent, false);
-        binding.avatar.init(mPicasso);
+        binding.avatar.init(new AvatarViewModel(mImageCacheWrapper), new IdentityNameFormatterImpl());
 
         ConversationItemViewModel viewModel = new ConversationItemViewModel(mConversationItemFormatter, mConversationClickListener);
         return new ViewHolder(binding, viewModel, mConversationStyle);
@@ -275,7 +301,6 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
         private final ConversationStyle mConversationStyle;
         private ConversationItemViewModel mViewModel;
 
-
         public ViewHolder(UiConversationItemBinding binding, ConversationItemViewModel viewModel, ConversationStyle conversationStyle) {
             super(binding.getRoot());
             mConversationItemBinding = binding;
@@ -305,5 +330,4 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
             mConversationItemBinding.executePendingBindings();
         }
     }
-
 }

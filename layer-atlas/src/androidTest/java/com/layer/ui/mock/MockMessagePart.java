@@ -1,4 +1,4 @@
-package com.layer.atlas.mock;
+package com.layer.ui.mock;
 
 import android.net.Uri;
 

@@ -1,4 +1,4 @@
-package com.layer.atlas.mock;
+package com.layer.ui.mock;
 
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -11,7 +11,6 @@ import com.layer.sdk.messaging.MessageOptions;
 import com.layer.sdk.messaging.MessagePart;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
