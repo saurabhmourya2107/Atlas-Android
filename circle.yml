@@ -10,4 +10,4 @@ test:
     # wait for it to have booted
     - circle-android wait-for-boot
     # run all tests against the emulator.
-    - ./gradlew test connectedAndroidTest --info
+    - ./gradlew test connectedAndroidTest --info -project-prop preDexEnable=false
