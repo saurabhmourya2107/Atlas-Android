@@ -111,7 +111,6 @@ public class AvatarView extends View {
         mPaintBorder.setColor(getResources().getColor(R.color.layer_ui_avatar_border));
         mPaintInitials.setColor(getResources().getColor(R.color.layer_ui_avatar_text));
 
-
         return this;
     }
 

@@ -67,7 +67,7 @@ public class ConversationsRecyclerView extends RecyclerView {
         super(context);
     }
 
-    public ConversationsRecyclerView init(LayerClient layerClient, Picasso picasso, ConversationFormatter conversationFormatter, ImageCacheWrapper imageCacheWrapper) {
+    public ConversationsRecyclerView init(LayerClient layerClient, Picasso picasso, ConversationItemFormatter conversationFormatter, ImageCacheWrapper imageCacheWrapper) {
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         manager.setStackFromEnd(false);
         setLayoutManager(manager);
@@ -77,17 +77,12 @@ public class ConversationsRecyclerView extends RecyclerView {
 
         mLayerClient = layerClient;
         mPicasso = picasso;
-        mAdapter = new ConversationsAdapter(getContext(), layerClient, picasso, conversationItemFormatter);
-        mAdapter = new ConversationsAdapter(getContext(), layerClient, picasso, conversationFormatter, imageCacheWrapper);
+        mAdapter = new ConversationsAdapter(getContext(), layerClient, conversationFormatter, imageCacheWrapper);
         mAdapter.setStyle(conversationStyle);
         super.setAdapter(mAdapter);
         refresh();
 
         return this;
-    }
-
-    public ConversationsRecyclerView init(LayerClient layerClient, Picasso picasso, ImageCacheWrapper imageCacheWrapper) {
-        return init(layerClient, picasso, new ConversationFormatter(), imageCacheWrapper);
     }
 
     @Override

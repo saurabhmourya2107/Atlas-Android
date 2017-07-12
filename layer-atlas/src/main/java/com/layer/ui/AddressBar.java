@@ -458,9 +458,10 @@ public class AddressBar extends LinearLayout {
 
             // Initialize participant data
             mName.setText(Util.getDisplayName(participant));
-            mAvatarView.init(new AvatarViewModel(mImageCacheWrapper), new IdentityNameFormatterImpl())
-                    .setStyle(mAvatarStyle);
+            mAvatarView.init(new AvatarViewModel(mImageCacheWrapper), new IdentityNameFormatterImpl());
             mAvatarView.setParticipants(participant);
+            mAvatarView.setStyle(mAvatarStyle);
+
 
             setOnClickListener(new OnClickListener() {
                 @Override
@@ -611,8 +612,8 @@ public class AddressBar extends LinearLayout {
             ViewHolder viewHolder = new ViewHolder(parent);
 
             viewHolder.mAvatarView
-                    .init(new AvatarViewModel(mImageCacheWrapper), new IdentityNameFormatterImpl())
-                    .setStyle(mAvatarStyle);
+                    .init(new AvatarViewModel(mImageCacheWrapper), new IdentityNameFormatterImpl());
+            viewHolder.mAvatarView.setStyle(mAvatarStyle);
             return viewHolder;
         }
 

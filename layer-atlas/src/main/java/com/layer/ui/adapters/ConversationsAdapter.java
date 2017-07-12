@@ -6,21 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.layer.ui.avatar.AvatarView;
-import com.layer.ui.R;
-import com.layer.ui.avatar.AvatarViewModel;
-import com.layer.ui.avatar.IdentityNameFormatterImpl;
-import com.layer.ui.messagetypes.CellFactory;
-import com.layer.ui.messagetypes.generic.GenericCellFactory;
-import com.layer.ui.messagetypes.location.LocationCellFactory;
-import com.layer.ui.messagetypes.singlepartimage.SinglePartImageCellFactory;
-import com.layer.ui.messagetypes.text.TextCellFactory;
-import com.layer.ui.messagetypes.threepartimage.ThreePartImageCellFactory;
-import com.layer.ui.util.ConversationFormatter;
-import com.layer.ui.util.ConversationStyle;
-import com.layer.ui.util.IdentityRecyclerViewEventListener;
-import com.layer.ui.util.Log;
-import com.layer.ui.util.Util;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Conversation;
 import com.layer.sdk.messaging.Identity;
@@ -29,6 +14,8 @@ import com.layer.sdk.query.Predicate;
 import com.layer.sdk.query.Query;
 import com.layer.sdk.query.RecyclerViewController;
 import com.layer.sdk.query.SortDescriptor;
+import com.layer.ui.avatar.AvatarViewModel;
+import com.layer.ui.avatar.IdentityNameFormatterImpl;
 import com.layer.ui.conversationitem.ConversationItemViewModel;
 import com.layer.ui.conversationitem.OnConversationItemClickListener;
 import com.layer.ui.databinding.UiConversationItemBinding;
@@ -38,7 +25,6 @@ import com.layer.ui.util.ConversationStyle;
 import com.layer.ui.util.IdentityRecyclerViewEventListener;
 import com.layer.ui.util.Log;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
-import com.squareup.picasso.Picasso;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -47,7 +33,6 @@ import java.util.Set;
 
 public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdapter.ViewHolder> implements RecyclerViewController.Callback, BaseAdapter<Conversation> {
     protected final LayerClient mLayerClient;
-    protected final Picasso mPicasso;
     private final RecyclerViewController<Conversation> mQueryController;
     private final LayoutInflater mInflater;
     private long mInitialHistory = 0;
@@ -55,24 +40,16 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
     private OnConversationItemClickListener mConversationClickListener;
     private ConversationStyle mConversationStyle;
     private final IdentityRecyclerViewEventListener mIdentityEventListener;
+    private ImageCacheWrapper mImageCacheWrapper;
     protected Set<CellFactory> mCellFactories;
     protected ConversationItemFormatter mConversationItemFormatter;
 
-    public ConversationsAdapter(Context context, LayerClient client, Picasso picasso, ConversationItemFormatter conversationItemFormatter) {
-        this(context, client, picasso, null, conversationItemFormatter);
+    public ConversationsAdapter(Context context, LayerClient client, ConversationItemFormatter conversationItemFormatter, ImageCacheWrapper imageCacheWrapper) {
+        this(context, client, null, conversationItemFormatter, imageCacheWrapper);
     }
 
-    public ConversationsAdapter(Context context, LayerClient client, Picasso picasso, Collection<String> updateAttributes, ConversationItemFormatter conversationItemFormatter) {
+    public ConversationsAdapter(Context context, LayerClient client, Collection<String> updateAttributes, ConversationItemFormatter conversationItemFormatter, ImageCacheWrapper imageCacheWrapper) {
         mConversationItemFormatter = conversationItemFormatter;
-    protected ConversationFormatter mConversationFormatter;
-    private ImageCacheWrapper mImageCacheWrapper;
-
-    public ConversationsAdapter(Context context, LayerClient client, Picasso picasso, ConversationFormatter conversationFormatter, ImageCacheWrapper imageCacheWrapper) {
-        this(context, client, picasso, null, conversationFormatter, imageCacheWrapper);
-    }
-
-    public ConversationsAdapter(Context context, LayerClient client, Picasso picasso, Collection<String> updateAttributes, ConversationFormatter conversationFormatter, ImageCacheWrapper imageCacheWrapper) {
-        mConversationFormatter = conversationFormatter;
         mImageCacheWrapper = imageCacheWrapper;
         Query<Conversation> query = Query.builder(Conversation.class)
                 /* Only show conversations we're still a member of */
@@ -83,7 +60,6 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
                 .build();
         mQueryController = client.newRecyclerViewController(query, updateAttributes, this);
         mLayerClient = client;
-        mPicasso = picasso;
         mInflater = LayoutInflater.from(context);
 
         setHasStableIds(false);
@@ -301,6 +277,7 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
         private final ConversationStyle mConversationStyle;
         private ConversationItemViewModel mViewModel;
 
+
         public ViewHolder(UiConversationItemBinding binding, ConversationItemViewModel viewModel, ConversationStyle conversationStyle) {
             super(binding.getRoot());
             mConversationItemBinding = binding;
@@ -330,4 +307,5 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
             mConversationItemBinding.executePendingBindings();
         }
     }
+
 }

@@ -3,21 +3,14 @@ package com.layer.ui.test;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 
-<<<<<<< HEAD:layer-atlas/src/androidTest/java/com/layer/atlas/test/GenericCellFactoryTest.java
-import com.layer.atlas.mock.MockLayerClient;
-import com.layer.atlas.mock.MockMessageImpl;
-import com.layer.atlas.mock.MockMessagePart;
-=======
 import com.layer.ui.messagetypes.generic.GenericCellFactory;
 import com.layer.ui.mock.MockLayerClient;
 import com.layer.ui.mock.MockMessageImpl;
 import com.layer.ui.mock.MockMessagePart;
->>>>>>> Rename Adapter:layer-atlas/src/androidTest/java/com/layer/ui/test/GenericCellFactoryTest.java
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Identity;
 import com.layer.sdk.messaging.Message;
 import com.layer.sdk.messaging.MessagePart;
-import com.layer.ui.messagetypes.generic.GenericCellFactory;
 
 import org.junit.Before;
 import org.junit.Test;
