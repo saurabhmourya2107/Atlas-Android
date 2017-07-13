@@ -12,6 +12,7 @@ import com.layer.ui.avatar.AvatarViewModel;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
 import com.layer.ui.util.imagecache.PicassoImageCacheWrapper;
 import com.layer.ui.util.imagecache.requesthandlers.MessagePartRequestHandler;
+import com.squareup.picasso.Picasso;
 
 public class AvatarActivityTestView extends Activity {
 
@@ -23,8 +24,10 @@ public class AvatarActivityTestView extends Activity {
         setContentView(R.layout.activity_avatar_test);
         LayerClient layerClient = new MockLayerClient();
         mAvatarView = (AvatarView) findViewById(R.id.test_avatar);
-        MessagePartRequestHandler messagePartRequestHandler = new MessagePartRequestHandler(layerClient);
-        ImageCacheWrapper imageCacheWrapper = new PicassoImageCacheWrapper(messagePartRequestHandler, this);
+        Picasso picasso = new Picasso.Builder(this)
+                .addRequestHandler(new MessagePartRequestHandler(layerClient))
+                .build();
+        ImageCacheWrapper imageCacheWrapper = new PicassoImageCacheWrapper(picasso);
         mAvatarView.init(new AvatarViewModel(imageCacheWrapper), new IdentityNameFormatterImpl());
     }
 }
