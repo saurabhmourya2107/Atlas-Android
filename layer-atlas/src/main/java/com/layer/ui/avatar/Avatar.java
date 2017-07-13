@@ -9,12 +9,9 @@ import com.layer.ui.util.imagecache.ImageCacheWrapper;
 import java.lang.ref.WeakReference;
 
 /**
- * Avatar interface exposes the interaction between the AvatarView and AvatarViewModel Avatar.
- * @see Avatar.ViewModel is implemented by
- * @see AvatarViewModel and
- * @see AvatarView
+ * @see Avatar.ViewModel exposes methods in the AvatarViewModel which are called by the {@link AvatarView}
+ * @see Avatar.ViewModel is implemented by {@link AvatarViewModel}
  **/
-
 public interface Avatar {
 
     /**
@@ -53,8 +50,6 @@ public interface Avatar {
          * @param identity
          * @return
          */
-
         String getInitialsForAvatarView(Identity identity);
     }
-
 }

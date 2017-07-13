@@ -36,7 +36,6 @@ public class AvatarViewModel implements Avatar.ViewModel  {
             @Override
             public void onSuccess() {
                 updateView();
-
             }
 
             @Override

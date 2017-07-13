@@ -19,6 +19,11 @@ public class PicassoImageCacheWrapper implements ImageCacheWrapper {
     protected final static CircleTransform SINGLE_TRANSFORM = new CircleTransform(TAG + ".single");
     protected final static CircleTransform MULTI_TRANSFORM = new CircleTransform(TAG + ".multi");
     protected final Picasso mPicasso;
+    /*
+        Picasso keeps a weak reference to the target when you load into a target,
+        hence we need to keep a strong reference to the targets to prevent Garbage Collector from
+        getting rid of the Targets.
+     */
     private Set<Target> mTargets;
 
     public PicassoImageCacheWrapper(MessagePartRequestHandler messagePartRequestHandler, Context context) {

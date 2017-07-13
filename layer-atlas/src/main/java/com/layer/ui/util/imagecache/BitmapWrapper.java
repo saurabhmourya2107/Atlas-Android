@@ -5,16 +5,23 @@ import android.support.annotation.NonNull;
 
 import java.util.UUID;
 
+/**
+ * This class wraps everything needed in a Bitmap
+ * The Bitmap is used in {@link com.layer.ui.avatar.Avatar.ViewModel#fetchBitmap(BitmapWrapper)}
+ * and also in {@link PicassoImageCacheWrapper}
+ * Properties can be added to BitmapWrapper to suit other ImageCache library
+ * We use Picasso in the implementation
+ */
 public class BitmapWrapper {
 
-    private final String mUniqueId;
+    private final UUID mUniqueId;
     private Bitmap mBitmap;
     private String mUrl;
     private int mWidth, mHeight;
     private boolean mIsMultiTransform;
 
     public BitmapWrapper(@NonNull String url, int width, int height, boolean isMultiTransform) {
-        mUniqueId = UUID.randomUUID().toString();
+        mUniqueId = UUID.randomUUID();
         mUrl = url;
         mWidth = width;
         mHeight = height;
@@ -54,7 +61,7 @@ public class BitmapWrapper {
         return mHeight;
     }
 
-    public String getUniqueId() {
+    public UUID getUniqueId() {
         return mUniqueId;
     }
 
