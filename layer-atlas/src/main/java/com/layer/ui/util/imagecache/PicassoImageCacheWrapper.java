@@ -26,11 +26,8 @@ public class PicassoImageCacheWrapper implements ImageCacheWrapper {
      */
     private Set<Target> mTargets;
 
-    public PicassoImageCacheWrapper(MessagePartRequestHandler messagePartRequestHandler, Context context) {
-        mPicasso = new Picasso.Builder(context)
-                .loggingEnabled(true)
-                .addRequestHandler(messagePartRequestHandler)
-                .build();
+    public PicassoImageCacheWrapper(Picasso picasso) {
+        mPicasso = picasso;
         mTargets = new HashSet<>();
     }
 
