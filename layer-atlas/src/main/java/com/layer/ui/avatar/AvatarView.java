@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -19,6 +20,7 @@ import com.layer.sdk.messaging.Presence;
 import com.layer.ui.R;
 import com.layer.ui.util.AvatarStyle;
 import com.layer.ui.util.imagecache.BitmapWrapper;
+import com.layer.ui.util.imagecache.ImageCacheWrapper;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -295,13 +297,36 @@ public class AvatarView extends View {
                         bitmapWrapper.setWidth(size);
                         bitmapWrapper.setHeight(size);
                         bitmapWrapper.setMultiTransform(avatarCount > 1);
-                        mViewModel.fetchBitmap(bitmapWrapper);
+                        mViewModel.getImageCacheWrapper().fetchBitmap(bitmapWrapper,
+                                new ImageCacheWrapper.Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        updateView();
+                                    }
+
+                                    @Override
+                                    public void onFailure() {
+                                        updateView();
+                                    }
+                                });
                     }
                 }
                 mPendingLoads.clear();
             }
         }
         return true;
+    }
+
+    private void updateView() {
+        Handler handler = getHandler();
+        if (handler != null) {
+            handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        invalidate();
+                    }
+                });
+        }
     }
 
     @Override

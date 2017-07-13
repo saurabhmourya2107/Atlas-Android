@@ -3,7 +3,6 @@ package com.layer.ui.avatar;
 import android.view.View;
 
 import com.layer.sdk.messaging.Identity;
-import com.layer.ui.util.imagecache.BitmapWrapper;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
 
 import java.lang.ref.WeakReference;
@@ -25,12 +24,6 @@ public interface Avatar {
          * @param view
          */
         void setView(WeakReference<View> view);
-
-        /**
-         * Fetch BitMap from ImageCacheWrapper Implentation passed into the ViewModel
-         * @param bitmapWrapper
-         */
-        void fetchBitmap(BitmapWrapper bitmapWrapper);
 
         /**
          * Set Name Formatter for the Identity

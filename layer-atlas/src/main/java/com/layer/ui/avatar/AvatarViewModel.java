@@ -30,37 +30,6 @@ public class AvatarViewModel implements Avatar.ViewModel  {
     }
 
     @Override
-    public void fetchBitmap(BitmapWrapper bitmapWrapper) {
-
-        mImageCacheWrapper.fetchBitmap(bitmapWrapper, new ImageCacheWrapper.Callback() {
-            @Override
-            public void onSuccess() {
-                updateView();
-            }
-
-            @Override
-            public void onFailure() {
-                updateView();
-            }
-        });
-    }
-
-    private void updateView() {
-        final View view = mView != null ? mView.get() : null;
-        if (view != null) {
-            Handler handler = view.getHandler();
-            if (handler != null) {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        view.invalidate();
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
     public void setView(@NonNull WeakReference<View> view) {
         mView = view;
     }
