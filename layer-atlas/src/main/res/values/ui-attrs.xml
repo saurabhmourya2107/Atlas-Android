@@ -90,7 +90,7 @@
     </declare-styleable>
 
     <declare-styleable name="AvatarView">
-        <attr name="maximumAvatar" format="integer"/>
+        <attr name="maximumAvatars" format="integer"/>
     </declare-styleable>
 
     <declare-styleable name="TypingIndicatorLayout"></declare-styleable>

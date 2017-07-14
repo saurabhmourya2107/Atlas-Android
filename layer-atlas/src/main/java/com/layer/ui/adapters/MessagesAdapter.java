@@ -209,7 +209,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     }
 
     /**
-     * @param shouldShowPresence Whether the AvatarViewModel for the other participant in a one on one
+     * @param shouldShowPresence Whether the AvatarView for the other participant in a one on one
      *                           conversation should be shown or not. Default is `true`.
      */
     public MessagesAdapter setShouldShowAvatarPresence(boolean shouldShowPresence) {

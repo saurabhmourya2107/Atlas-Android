@@ -65,7 +65,7 @@ public class AvatarView extends View {
 
     private Set<Identity> mParticipants = new LinkedHashSet<>();
 
-    private final Map<Identity, BitmapWrapper> mIdentityBitmapWrapperHashMap = new HashMap<>();
+    private final Map<Identity, BitmapWrapper> mIdentityBitmapWrapperMap = new HashMap<>();
     private final Map<Identity, String> mInitials = new HashMap<>();
     private final List<BitmapWrapper> mPendingLoads = new ArrayList<>();
 
@@ -101,7 +101,6 @@ public class AvatarView extends View {
 
     public AvatarView init(@NonNull AvatarViewModel avatarViewModel, @NonNull IdentityNameFormatter identityNameFormatter) {
         mViewModel = avatarViewModel;
-        mViewModel.setView(new WeakReference<View>(this));
         mViewModel.setIdentityNameFormatter(identityNameFormatter);
 
         mPaintInitials.setAntiAlias(true);
@@ -198,7 +197,7 @@ public class AvatarView extends View {
         List<BitmapWrapper> recyclableBitmapWrappers = new ArrayList<>();
         for (Identity removed : diff.removed) {
             mInitials.remove(removed);
-            BitmapWrapper bitmapWrapper = mIdentityBitmapWrapperHashMap.remove(removed);
+            BitmapWrapper bitmapWrapper = mIdentityBitmapWrapperMap.remove(removed);
             if (bitmapWrapper != null && removed.getAvatarImageUrl() != null) {
                 mViewModel.getImageCacheWrapper().cancelBitmap(bitmapWrapper);
                 recyclableBitmapWrappers.add(bitmapWrapper);
@@ -216,7 +215,7 @@ public class AvatarView extends View {
                 bitmapWrapper = recyclableBitmapWrappers.remove(0);
             }
             bitmapWrapper.setUrl(added.getAvatarImageUrl());
-            mIdentityBitmapWrapperHashMap.put(added, bitmapWrapper);
+            mIdentityBitmapWrapperMap.put(added, bitmapWrapper);
             toLoad.add(bitmapWrapper);
         }
 
@@ -227,7 +226,7 @@ public class AvatarView extends View {
             mInitials.put(existing, mViewModel.getInitialsForAvatarView(existing));
             String url = existing.getAvatarImageUrl() != null ? existing.getAvatarImageUrl() : "";
             if (!url.isEmpty()) {
-                BitmapWrapper existingBitmapWrapper = mIdentityBitmapWrapperHashMap.get(existing);
+                BitmapWrapper existingBitmapWrapper = mIdentityBitmapWrapperMap.get(existing);
                 mViewModel.getImageCacheWrapper().cancelBitmap(existingBitmapWrapper);
                 toLoad.add(existingBitmapWrapper);
             }
@@ -348,7 +347,7 @@ public class AvatarView extends View {
 
             // Initials or bitmap
             Identity identity = entry.getKey();
-            BitmapWrapper bitmapWrapper = mIdentityBitmapWrapperHashMap.get(identity);
+            BitmapWrapper bitmapWrapper = mIdentityBitmapWrapperMap.get(identity);
             Bitmap bitmap = (bitmapWrapper == null) ? null : bitmapWrapper.getBitmap();
             if (bitmap != null && identity.getAvatarImageUrl() != null) {
                 canvas.drawBitmap(bitmap, mContentRect.left, mContentRect.top, PAINT_BITMAP);
@@ -421,7 +420,7 @@ public class AvatarView extends View {
 
     private void parseStyle(Context context, AttributeSet attrs, int defStyleAttr) {
         TypedArray ta = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AvatarView, R.attr.AvatarView, defStyleAttr);
-        mMaxAvatar = ta.getInt(R.styleable.AvatarView_maximumAvatar, 3);
+        mMaxAvatar = ta.getInt(R.styleable.AvatarView_maximumAvatars, 3);
         ta.recycle();
     }
 

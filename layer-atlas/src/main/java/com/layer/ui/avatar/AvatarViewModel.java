@@ -1,11 +1,7 @@
 package com.layer.ui.avatar;
 
-import android.view.View;
-
 import com.layer.sdk.messaging.Identity;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
-
-import java.lang.ref.WeakReference;
 
 /**
  * @see AvatarViewModel exposes methods in the AvatarViewModelImpl which are called by the {@link
@@ -13,12 +9,6 @@ import java.lang.ref.WeakReference;
  * @see AvatarViewModel is implemented by {@link AvatarViewModelImpl}
  **/
 public interface AvatarViewModel {
-    /**
-     * Set the View on the ViewModel
-     *
-     * @see AvatarView#init(AvatarViewModel, IdentityNameFormatter)
-     */
-    void setView(WeakReference<View> view);
 
     /**
      * Set Name Formatter for the Identity
