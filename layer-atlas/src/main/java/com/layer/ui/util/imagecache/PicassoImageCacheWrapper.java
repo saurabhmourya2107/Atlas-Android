@@ -4,12 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.VisibleForTesting;
 
+import com.layer.ui.util.Log;
 import com.layer.ui.util.imagecache.transformations.CircleTransform;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 
 import static com.layer.ui.util.Log.TAG;
+import static com.layer.ui.util.Log.VERBOSE;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -61,6 +63,9 @@ public class PicassoImageCacheWrapper implements ImageCacheWrapper {
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
+                if (Log.isLoggable(VERBOSE)) {
+                    Log.v("onBitMapFailed :" + errorDrawable);
+                }
                 bitmapWrapper.setBitmap(null);
                 callback.onFailure();
                 mTargets.remove(this);
