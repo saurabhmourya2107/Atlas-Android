@@ -8,7 +8,7 @@ import com.layer.ui.mock.MockLayerClient;
 import com.layer.sdk.LayerClient;
 import com.layer.ui.R;
 import com.layer.ui.avatar.AvatarView;
-import com.layer.ui.avatar.AvatarViewModel;
+import com.layer.ui.avatar.AvatarViewModelImpl;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
 import com.layer.ui.util.imagecache.PicassoImageCacheWrapper;
 import com.layer.ui.util.imagecache.requesthandlers.MessagePartRequestHandler;
@@ -28,6 +28,6 @@ public class AvatarActivityTestView extends Activity {
                 .addRequestHandler(new MessagePartRequestHandler(layerClient))
                 .build();
         ImageCacheWrapper imageCacheWrapper = new PicassoImageCacheWrapper(picasso);
-        mAvatarView.init(new AvatarViewModel(imageCacheWrapper), new IdentityNameFormatterImpl());
+        mAvatarView.init(new AvatarViewModelImpl(imageCacheWrapper), new IdentityNameFormatterImpl());
     }
 }

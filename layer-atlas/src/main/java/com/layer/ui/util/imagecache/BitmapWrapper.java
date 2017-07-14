@@ -3,25 +3,27 @@ package com.layer.ui.util.imagecache;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
+import com.layer.ui.avatar.AvatarViewModel;
+
 import java.util.UUID;
 
 /**
  * This class wraps everything needed in a Bitmap
- * The Bitmap is used in {@link com.layer.ui.avatar.Avatar.ViewModel#fetchBitmap(BitmapWrapper)}
+ * The Bitmap is used in {@link ImageCacheWrapper#fetchBitmap(BitmapWrapper, ImageCacheWrapper.Callback)}
  * and also in {@link PicassoImageCacheWrapper}
  * Properties can be added to BitmapWrapper to suit other ImageCache library
  * We use Picasso in the implementation
  */
 public class BitmapWrapper {
 
-    private final UUID mUniqueId;
+    private final UUID mId;
     private Bitmap mBitmap;
     private String mUrl;
     private int mWidth, mHeight;
     private boolean mIsMultiTransform;
 
     public BitmapWrapper(@NonNull String url, int width, int height, boolean isMultiTransform) {
-        mUniqueId = UUID.randomUUID();
+        mId = UUID.randomUUID();
         mUrl = url;
         mWidth = width;
         mHeight = height;
@@ -61,8 +63,8 @@ public class BitmapWrapper {
         return mHeight;
     }
 
-    public UUID getUniqueId() {
-        return mUniqueId;
+    public UUID getId() {
+        return mId;
     }
 
     public boolean hasMultiTransform() {

@@ -14,7 +14,7 @@ import com.layer.sdk.query.Predicate;
 import com.layer.sdk.query.Query;
 import com.layer.sdk.query.RecyclerViewController;
 import com.layer.sdk.query.SortDescriptor;
-import com.layer.ui.avatar.AvatarViewModel;
+import com.layer.ui.avatar.AvatarViewModelImpl;
 import com.layer.ui.avatar.IdentityNameFormatterImpl;
 import com.layer.ui.conversationitem.ConversationItemViewModel;
 import com.layer.ui.conversationitem.OnConversationItemClickListener;
@@ -151,7 +151,7 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
     @Override
     public ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         UiConversationItemBinding binding = UiConversationItemBinding.inflate(mInflater, parent, false);
-        binding.avatar.init(new AvatarViewModel(mImageCacheWrapper), new IdentityNameFormatterImpl());
+        binding.avatar.init(new AvatarViewModelImpl(mImageCacheWrapper), new IdentityNameFormatterImpl());
 
         ConversationItemViewModel viewModel = new ConversationItemViewModel(mConversationItemFormatter, mConversationClickListener);
         return new ViewHolder(binding, viewModel, mConversationStyle);

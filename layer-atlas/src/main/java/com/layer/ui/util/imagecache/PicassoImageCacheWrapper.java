@@ -2,15 +2,14 @@ package com.layer.ui.util.imagecache;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.VisibleForTesting;
 
-import com.layer.ui.util.Log;
 import com.layer.ui.util.imagecache.transformations.CircleTransform;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 
 import static com.layer.ui.util.Log.TAG;
-import static com.layer.ui.util.Log.VERBOSE;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,12 +30,27 @@ public class PicassoImageCacheWrapper implements ImageCacheWrapper {
         mTargets = new HashSet<>();
     }
 
-
     @Override
     public void fetchBitmap(final BitmapWrapper bitmapWrapper, final Callback callback) {
 
+        Target target = createTarget(bitmapWrapper, callback);
         boolean isMultiTransform = bitmapWrapper.hasMultiTransform();
-        Target target = new Target() {
+
+        RequestCreator creator = mPicasso.load(bitmapWrapper.getUrl())
+                .tag(bitmapWrapper.getId())
+                .noPlaceholder()
+                .noFade()
+                .centerCrop()
+                .resize(bitmapWrapper.getWidth(), bitmapWrapper.getHeight());
+        creator.transform(isMultiTransform ? MULTI_TRANSFORM : SINGLE_TRANSFORM)
+                .into(target);
+
+        mTargets.add(target);
+    }
+
+    @VisibleForTesting
+    public Target createTarget(final BitmapWrapper bitmapWrapper, final Callback callback) {
+        return new Target() {
 
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -47,10 +61,6 @@ public class PicassoImageCacheWrapper implements ImageCacheWrapper {
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
-                if (Log.isLoggable(VERBOSE)) {
-                    Log.v("onBitMapFailed :" + errorDrawable);
-                }
-
                 bitmapWrapper.setBitmap(null);
                 callback.onFailure();
                 mTargets.remove(this);
@@ -59,22 +69,11 @@ public class PicassoImageCacheWrapper implements ImageCacheWrapper {
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {}
         };
-
-        RequestCreator creator = mPicasso.load(bitmapWrapper.getUrl())
-                .tag(bitmapWrapper.getUniqueId())
-                .noPlaceholder()
-                .noFade()
-                .centerCrop()
-                .resize(bitmapWrapper.getWidth(), bitmapWrapper.getHeight());
-
-        mTargets.add(target);
-        creator.transform(isMultiTransform ? MULTI_TRANSFORM : SINGLE_TRANSFORM)
-                .into(target);
     }
 
     public void cancelBitmap(BitmapWrapper bitmapWrapper) {
         if (bitmapWrapper != null) {
-            mPicasso.cancelTag(bitmapWrapper.getUniqueId());
+            mPicasso.cancelTag(bitmapWrapper.getId());
         }
     }
 }

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.layer.ui.avatar.AvatarView;
 import com.layer.ui.R;
-import com.layer.ui.avatar.AvatarViewModel;
+import com.layer.ui.avatar.AvatarViewModelImpl;
 import com.layer.ui.avatar.IdentityNameFormatterImpl;
 import com.layer.ui.messagetypes.CellFactory;
 import com.layer.ui.messagetypes.MessageStyle;
@@ -184,7 +184,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     }
 
     /**
-     * @return If the Avatar for the other participant in a one on one conversation  will be shown
+     * @return If the AvatarViewModel for the other participant in a one on one conversation  will be shown
      * or not
      */
     public boolean getShouldShowAvatarInOneOnOneConversations() {
@@ -192,7 +192,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     }
 
     /**
-     * @param shouldShowAvatarInOneOnOneConversations Whether the Avatar for the other participant
+     * @param shouldShowAvatarInOneOnOneConversations Whether the AvatarViewModel for the other participant
      *                                                in a one on one conversation should be shown
      *                                                or not
      */
@@ -201,7 +201,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     }
 
     /**
-     * @return If the Avatar for the other participant in a one on one conversation will be shown
+     * @return If the AvatarViewModel for the other participant in a one on one conversation will be shown
      * or not. Defaults to `true`.
      */
     public boolean getShouldShowAvatarPresence() {
@@ -209,7 +209,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     }
 
     /**
-     * @param shouldShowPresence Whether the Avatar for the other participant in a one on one
+     * @param shouldShowPresence Whether the AvatarViewModel for the other participant in a one on one
      *                           conversation should be shown or not. Default is `true`.
      */
     public MessagesAdapter setShouldShowAvatarPresence(boolean shouldShowPresence) {
@@ -734,7 +734,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
             mAvatarView = ((AvatarView) itemView.findViewById(R.id.avatar));
             if (mAvatarView != null)  {
-                mAvatarView.init(new AvatarViewModel(imageCachWrapper), new IdentityNameFormatterImpl());
+                mAvatarView.init(new AvatarViewModelImpl(imageCachWrapper), new IdentityNameFormatterImpl());
                 mAvatarView.setShouldShowPresence(shouldShowAvatarPresence);
             }
         }

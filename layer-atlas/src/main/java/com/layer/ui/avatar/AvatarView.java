@@ -84,7 +84,7 @@ public class AvatarView extends View {
 
     private Rect mRect = new Rect();
     private RectF mContentRect = new RectF();
-    private Avatar.ViewModel mViewModel;
+    private AvatarViewModel mViewModel;
 
     public AvatarView(Context context) {
         super(context);
@@ -99,7 +99,7 @@ public class AvatarView extends View {
         parseStyle(getContext(), attrs, defStyleAttr);
     }
 
-    public AvatarView init(@NonNull Avatar.ViewModel avatarViewModel, @NonNull IdentityNameFormatter identityNameFormatter) {
+    public AvatarView init(@NonNull AvatarViewModel avatarViewModel, @NonNull IdentityNameFormatter identityNameFormatter) {
         mViewModel = avatarViewModel;
         mViewModel.setView(new WeakReference<View>(this));
         mViewModel.setIdentityNameFormatter(identityNameFormatter);

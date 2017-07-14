@@ -2,6 +2,8 @@ package com.layer.ui.util.imagecache;
 
 import android.graphics.Bitmap;
 
+import com.layer.ui.avatar.AvatarViewModelImpl;
+
 public interface ImageCacheWrapper {
 
     /**
@@ -23,7 +25,7 @@ public interface ImageCacheWrapper {
 
     /**
      * Callback on the ViewModel when the Bitmap is loaded from the ImageCache Library
-     * @see com.layer.ui.avatar.AvatarViewModel#fetchBitmap(BitmapWrapper)
+     * @see AvatarViewModelImpl#fetchBitmap(BitmapWrapper)
      *
      */
     interface Callback {
