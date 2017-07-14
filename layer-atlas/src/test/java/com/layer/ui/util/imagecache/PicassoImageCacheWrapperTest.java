@@ -52,8 +52,6 @@ public class PicassoImageCacheWrapperTest {
     Target mMockTarget;
     @Mock
     BitmapWrapper mMockBitmapWrapper;
-    @Mock
-    Drawable mMockDrawable;
 
     @Before
     public void setUp() throws Exception {
@@ -105,7 +103,7 @@ public class PicassoImageCacheWrapperTest {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
                 Target target = (Target) args[0];
-                target.onBitmapFailed(mMockDrawable);
+                target.onBitmapFailed(null);
                 return null;
             }
         }).when(mMockRequestCreator).into(target);

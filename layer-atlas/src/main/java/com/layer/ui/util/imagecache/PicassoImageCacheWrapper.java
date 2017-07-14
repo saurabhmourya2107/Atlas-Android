@@ -63,7 +63,7 @@ public class PicassoImageCacheWrapper implements ImageCacheWrapper {
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
-                if (Log.isLoggable(VERBOSE)) {
+                if (errorDrawable != null && Log.isLoggable(VERBOSE)) {
                     Log.v("onBitMapFailed :" + errorDrawable);
                 }
                 bitmapWrapper.setBitmap(null);
