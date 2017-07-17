@@ -9,6 +9,11 @@ test:
         parallel: true
     # wait for it to have booted
     - circle-android wait-for-boot
+
+# Unlock the emulator screen after 15 seconds
+    - sleep 45
+    - adb shell input keyevent 82
+
     # run all tests against the emulator.
     - ./gradlew connectedAndroidTest test -PpreDexEnabled=false --console=plain
 
