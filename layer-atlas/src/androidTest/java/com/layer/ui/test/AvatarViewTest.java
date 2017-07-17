@@ -15,14 +15,13 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.internal.util.Checks;
 import android.support.test.rule.ActivityTestRule;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import com.layer.ui.R;
+import com.layer.ui.presence.PresenceView;
 import com.layer.ui.view.AvatarActivityTestView;
 
 import org.hamcrest.Description;
@@ -52,10 +51,10 @@ public class AvatarViewTest {
 
     public static Matcher<View> withBgColor(final int color) {
         Checks.checkNotNull(color);
-        return new BoundedMatcher<View, LinearLayout>(LinearLayout.class) {
+        return new BoundedMatcher<View, PresenceView>(PresenceView.class) {
             @Override
-            public boolean matchesSafely(LinearLayout row) {
-                return color == ((ColorDrawable) row.getBackground()).getColor();
+            public boolean matchesSafely(PresenceView presenceView) {
+                return color ==  presenceView.getSolidColor();
             }
             @Override
             public void describeTo(Description description) {

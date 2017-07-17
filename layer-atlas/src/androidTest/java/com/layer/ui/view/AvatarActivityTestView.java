@@ -14,6 +14,7 @@ import com.layer.ui.avatar.AvatarView;
 import com.layer.ui.avatar.AvatarViewModelImpl;
 import com.layer.ui.avatar.IdentityNameFormatterImpl;
 import com.layer.ui.mock.MockLayerClient;
+import com.layer.ui.presence.PresenceView;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
 import com.layer.ui.util.imagecache.PicassoImageCacheWrapper;
 import com.layer.ui.util.imagecache.requesthandlers.MessagePartRequestHandler;
@@ -28,6 +29,7 @@ public class AvatarActivityTestView extends Activity implements AdapterView.OnIt
     private Spinner mPresenceSpinner;
     private ArrayAdapter<String> mPresenceSpinnerDataAdapter;
     private LayerClient mLayerClient;
+    private PresenceView mPresenceView;
 
 
 
@@ -38,6 +40,7 @@ public class AvatarActivityTestView extends Activity implements AdapterView.OnIt
         mLayerClient = new MockLayerClient();
         mAvatarView = (AvatarView) findViewById(R.id.test_avatar);
         mPresenceSpinner = (Spinner) findViewById(R.id.test_spinner);
+        mPresenceView = (PresenceView) findViewById(R.id.presence);
         MessagePartRequestHandler messagePartRequestHandler = new MessagePartRequestHandler(mLayerClient);
         ImageCacheWrapper imageCacheWrapper = new PicassoImageCacheWrapper(Picasso.with(this));
         mAvatarView.init(new AvatarViewModelImpl(imageCacheWrapper), new IdentityNameFormatterImpl());
@@ -65,6 +68,7 @@ public class AvatarActivityTestView extends Activity implements AdapterView.OnIt
         Presence.PresenceStatus newStatus = Presence.PresenceStatus.valueOf(newSelection);
         if (mLayerClient.isAuthenticated()) {
             mLayerClient.setPresenceStatus(newStatus);
+            mPresenceView.invalidate();
         }
     }
 
