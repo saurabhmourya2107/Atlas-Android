@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -68,11 +69,7 @@ public class PresenceView extends View {
 
     private void drawPresence(Canvas canvas) {
 
-        if (mIdentity == null) {
-            return;
-        }
-
-        Presence.PresenceStatus currentStatus = mIdentity.getPresenceStatus();
+        Presence.PresenceStatus currentStatus = mIdentity != null ? mIdentity.getPresenceStatus() : null;
         if (currentStatus == null) {
             return;
         }
@@ -161,6 +158,11 @@ public class PresenceView extends View {
         if (makeCircleHollow) {
             canvas.drawCircle(presenceCenterX, presenceCenterY, (presenceInnerRadius / 2f), mBackgroundPaint);
         }
+    }
+
+    @VisibleForTesting
+    public int getPresenceColor() {
+        return mPresencePaint.getColor();
     }
 
     private void parseStyle(Context context, AttributeSet attrs, int defStyle) {
