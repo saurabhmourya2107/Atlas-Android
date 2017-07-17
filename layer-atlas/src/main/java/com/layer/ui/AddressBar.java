@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.layer.ui.avatar.AvatarView;
 import com.layer.ui.avatar.AvatarViewModelImpl;
 import com.layer.ui.avatar.IdentityNameFormatterImpl;
+import com.layer.ui.presence.PresenceView;
 import com.layer.ui.util.AvatarStyle;
 import com.layer.ui.util.EditTextUtil;
 import com.layer.ui.util.IdentityDisplayNameComparator;
@@ -429,6 +430,7 @@ public class AddressBar extends LinearLayout {
         private Identity mParticipant;
 
         private AvatarView mAvatarView;
+        private PresenceView mPresenceView;
         private TextView mName;
         private ImageView mRemove;
 
@@ -441,6 +443,7 @@ public class AddressBar extends LinearLayout {
             // Inflate and cache views
             inflater.inflate(R.layout.ui_participant_chip, this, true);
             mAvatarView = (AvatarView) findViewById(R.id.avatar);
+            mPresenceView = (PresenceView) findViewById(R.id.presence);
             mName = (TextView) findViewById(R.id.name);
             mRemove = (ImageView) findViewById(R.id.remove);
 
@@ -460,6 +463,7 @@ public class AddressBar extends LinearLayout {
             mName.setText(Util.getDisplayName(participant));
             mAvatarView.init(new AvatarViewModelImpl(mImageCacheWrapper), new IdentityNameFormatterImpl());
             mAvatarView.setParticipants(participant);
+            mPresenceView.setParticipants(participant);
             mAvatarView.setStyle(mAvatarStyle);
 
 
@@ -633,6 +637,7 @@ public class AddressBar extends LinearLayout {
                             }
                         });
                         viewHolder.mAvatarView.setParticipants(participant);
+                        viewHolder.mPresenceView.setParticipants(participant);
                     }
                     break;
 
@@ -745,10 +750,12 @@ public class AddressBar extends LinearLayout {
         protected class ViewHolder extends RecyclerView.ViewHolder {
             private AvatarView mAvatarView;
             private TextView mTitle;
+            private PresenceView mPresenceView;
 
             public ViewHolder(ViewGroup parent) {
                 super(LayoutInflater.from(parent.getContext()).inflate(R.layout.ui_address_bar_item, parent, false));
                 mAvatarView = (AvatarView) itemView.findViewById(R.id.avatar);
+                mPresenceView = (PresenceView) itemView.findViewById(R.id.presence);
                 mTitle = (TextView) itemView.findViewById(R.id.title);
                 mTitle.setTextColor(mListTextColor);
                 mTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, mListTextSize);

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -16,13 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.layer.sdk.messaging.Identity;
-import com.layer.sdk.messaging.Presence;
 import com.layer.ui.R;
 import com.layer.ui.util.AvatarStyle;
 import com.layer.ui.util.imagecache.BitmapWrapper;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,10 +43,6 @@ public class AvatarView extends View {
     private final Paint mPaintInitials = new Paint();
     private final Paint mPaintBorder = new Paint();
     private final Paint mPaintBackground = new Paint();
-    private final Paint mPresencePaint = new Paint();
-    private final Paint mBackgroundPaint = new Paint();
-
-    private boolean mShouldShowPresence = true;
 
     private int mMaxAvatar = 3;
     private static final float BORDER_SIZE_DP = 1f;
@@ -77,10 +70,6 @@ public class AvatarView extends View {
     private float mDeltaX;
     private float mDeltaY;
     private float mTextSize;
-    private float mPresenceOuterRadius;
-    private float mPresenceInnerRadius;
-    private float mPresenceCenterX;
-    private float mPresenceCenterY;
 
     private Rect mRect = new Rect();
     private RectF mContentRect = new RectF();
@@ -135,31 +124,6 @@ public class AvatarView extends View {
         mParticipants.clear();
         mParticipants.addAll(participants);
         update();
-    }
-
-    /**
-     * Enable or disable showing presence information for this avatar. Presence is shown only for
-     * single user Avatars. If avatar is a cluster, presence will not be shown.
-     * <p>
-     * Default is `true`, to show presence.
-     *
-     * @param shouldShowPresence set to `true` to show presence, `false` otherwise.
-     * @return
-     */
-    public AvatarView setShouldShowPresence(boolean shouldShowPresence) {
-        mShouldShowPresence = shouldShowPresence;
-        return this;
-    }
-
-    /**
-     * Returns if `shouldShowPresence` flag is enabled for this avatar.
-     * <p>
-     * Default is `true`
-     *
-     * @return `true` if `shouldShowPresence` is set to `true`, `false` otherwise.
-     */
-    public boolean getShouldShowPresence() {
-        return mShouldShowPresence;
     }
 
     public Set<Identity> getParticipants() {
@@ -275,12 +239,6 @@ public class AvatarView extends View {
         mDeltaX = (drawableWidth - outerMultiSize) / (avatarCount - 1);
         mDeltaY = (drawableHeight - outerMultiSize) / (avatarCount - 1);
 
-        // Presence
-        mPresenceOuterRadius = mOuterRadius / 3f;
-        mPresenceInnerRadius = mInnerRadius / 3f;
-        mPresenceCenterX = mCenterX + mOuterRadius - mPresenceOuterRadius;
-        mPresenceCenterY = mCenterY + mOuterRadius - mPresenceOuterRadius;
-
         synchronized (mPendingLoads) {
             if (!mPendingLoads.isEmpty()) {
                 int size = Math.round(hasBorder ? (mInnerRadius * 2f) : (mOuterRadius * 2f));
@@ -359,62 +317,10 @@ public class AvatarView extends View {
                 canvas.drawText(initials, cx - mRect.centerX(), cy - mRect.centerY() - 1f, mPaintInitials);
             }
 
-            // Presence
-            if (mShouldShowPresence && avatarCount == 1) { // Show only for single user avatars
-                drawPresence(canvas, entry.getKey());
-            }
-
             // Translate for next avatar
             cx += mDeltaX;
             cy += mDeltaY;
             mContentRect.offset(mDeltaX, mDeltaY);
-        }
-    }
-
-    private void drawPresence(Canvas canvas, Identity identity) {
-        Presence.PresenceStatus currentStatus = identity.getPresenceStatus();
-        if (currentStatus == null) {
-            return;
-        }
-
-        boolean drawPresence = true;
-        boolean makeCircleHollow = false;
-        switch (currentStatus) {
-            case AVAILABLE:
-                mPresencePaint.setColor(Color.rgb(0x4F, 0xBF, 0x62));
-                break;
-            case AWAY:
-                mPresencePaint.setColor(Color.rgb(0xF7, 0xCA, 0x40));
-                break;
-            case OFFLINE:
-                mPresencePaint.setColor(Color.rgb(0x99, 0x99, 0x9c));
-                makeCircleHollow = true;
-                break;
-            case INVISIBLE:
-                mPresencePaint.setColor(Color.rgb(0x50, 0xC0, 0x62));
-                makeCircleHollow = true;
-                break;
-            case BUSY:
-                mPresencePaint.setColor(Color.rgb(0xE6, 0x44, 0x3F));
-                break;
-            default:
-                drawPresence = false;
-                break;
-        }
-        if (drawPresence) {
-            // Clear background + create border
-            mBackgroundPaint.setColor(Color.WHITE);
-            mBackgroundPaint.setAntiAlias(true);
-            canvas.drawCircle(mPresenceCenterX, mPresenceCenterY, mPresenceOuterRadius, mBackgroundPaint);
-
-            // Draw Presence status
-            mPresencePaint.setAntiAlias(true);
-            canvas.drawCircle(mPresenceCenterX, mPresenceCenterY, mPresenceInnerRadius, mPresencePaint);
-
-            // Draw hollow if needed
-            if (makeCircleHollow) {
-                canvas.drawCircle(mPresenceCenterX, mPresenceCenterY, (mPresenceInnerRadius / 2f), mBackgroundPaint);
-            }
         }
     }
 

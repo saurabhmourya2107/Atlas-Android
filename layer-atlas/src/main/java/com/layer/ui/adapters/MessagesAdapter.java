@@ -19,6 +19,7 @@ import com.layer.ui.avatar.AvatarViewModelImpl;
 import com.layer.ui.avatar.IdentityNameFormatterImpl;
 import com.layer.ui.messagetypes.CellFactory;
 import com.layer.ui.messagetypes.MessageStyle;
+import com.layer.ui.presence.PresenceView;
 import com.layer.ui.util.IdentityRecyclerViewEventListener;
 import com.layer.ui.util.Log;
 import com.layer.ui.util.Util;
@@ -717,6 +718,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         protected AvatarView mAvatarView;
         protected ViewGroup mCell;
         protected TextView mReceipt;
+        protected PresenceView mPresenceView;
 
         // Cell
         protected CellFactory.CellHolder mCellHolder;
@@ -731,11 +733,14 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             mClusterSpaceGap = (Space) itemView.findViewById(R.id.cluster_space);
             mCell = (ViewGroup) itemView.findViewById(R.id.cell);
             mReceipt = (TextView) itemView.findViewById(R.id.receipt);
-
+            mPresenceView = (PresenceView) itemView.findViewById(R.id.presence);
             mAvatarView = ((AvatarView) itemView.findViewById(R.id.avatar));
             if (mAvatarView != null)  {
                 mAvatarView.init(new AvatarViewModelImpl(imageCachWrapper), new IdentityNameFormatterImpl());
-                mAvatarView.setShouldShowPresence(shouldShowAvatarPresence);
+            }
+
+            if (!shouldShowAvatarPresence) {
+                mPresenceView.setVisibility(View.INVISIBLE);
             }
         }
     }
