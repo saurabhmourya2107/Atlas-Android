@@ -7,17 +7,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Presence;
 import com.layer.ui.R;
 import com.layer.ui.avatar.AvatarView;
 import com.layer.ui.avatar.AvatarViewModelImpl;
 import com.layer.ui.avatar.IdentityNameFormatterImpl;
+import com.layer.ui.mock.MockIdentity;
 import com.layer.ui.mock.MockLayerClient;
 import com.layer.ui.presence.PresenceView;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
 import com.layer.ui.util.imagecache.PicassoImageCacheWrapper;
-import com.layer.ui.util.imagecache.requesthandlers.MessagePartRequestHandler;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -28,8 +27,9 @@ public class AvatarActivityTestView extends Activity implements AdapterView.OnIt
     private AvatarView mAvatarView;
     private Spinner mPresenceSpinner;
     private ArrayAdapter<String> mPresenceSpinnerDataAdapter;
-    private LayerClient mLayerClient;
+    private MockLayerClient mLayerClient;
     private PresenceView mPresenceView;
+    private MockIdentity mMockIdentity;
 
 
 
@@ -38,11 +38,14 @@ public class AvatarActivityTestView extends Activity implements AdapterView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_avatar_test);
         mLayerClient = new MockLayerClient();
+        mMockIdentity = new MockIdentity();
         mAvatarView = (AvatarView) findViewById(R.id.test_avatar);
         mPresenceSpinner = (Spinner) findViewById(R.id.test_spinner);
-        mPresenceView = (PresenceView) findViewById(R.id.presence);
-        MessagePartRequestHandler messagePartRequestHandler = new MessagePartRequestHandler(mLayerClient);
+        mPresenceView = (PresenceView) findViewById(R.id.test_presence);
+        mPresenceView.setParticipants(mMockIdentity);
         ImageCacheWrapper imageCacheWrapper = new PicassoImageCacheWrapper(Picasso.with(this));
+        mAvatarView.init(new AvatarViewModelImpl(imageCacheWrapper), new IdentityNameFormatterImpl());
+        mAvatarView.setParticipants(mMockIdentity);
         mAvatarView.init(new AvatarViewModelImpl(imageCacheWrapper), new IdentityNameFormatterImpl());
         setUp();
     }
@@ -62,14 +65,8 @@ public class AvatarActivityTestView extends Activity implements AdapterView.OnIt
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if (!mLayerClient.isAuthenticated()) return;
-
-        String newSelection = mPresenceSpinnerDataAdapter.getItem(i).toString();
-        Presence.PresenceStatus newStatus = Presence.PresenceStatus.valueOf(newSelection);
-        if (mLayerClient.isAuthenticated()) {
-            mLayerClient.setPresenceStatus(newStatus);
-            mPresenceView.invalidate();
-        }
+        mMockIdentity.getPresenceStatus(i);
+        mPresenceView.invalidate();
     }
 
     @Override
