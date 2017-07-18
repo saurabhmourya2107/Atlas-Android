@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -23,11 +24,11 @@ public class PresenceView extends View {
     private final Paint mPresencePaint = new Paint();
 
     private Identity mIdentity;
-    private int mAvailableColor = Color.rgb(0x4F, 0xBF, 0x62);
-    private int mBusyColor = Color.rgb(0xE6, 0x44, 0x3F);
-    private int mAwayColor = Color.rgb(0xF7, 0xCA, 0x40);
-    private int mInvisibleColor = Color.rgb(0x50, 0xC0, 0x62);
-    private int mOfflineColor = Color.rgb(0x99, 0x99, 0x9c);
+    private int mAvailableColor = ContextCompat.getColor(getContext(), R.color.layer_ui_presence_available);
+    private int mBusyColor = ContextCompat.getColor(getContext(), R.color.layer_ui_presence_busy);
+    private int mAwayColor = ContextCompat.getColor(getContext(), R.color.layer_ui_presence_away);
+    private int mInvisibleColor = ContextCompat.getColor(getContext(), R.color.layer_ui_presence_invisible);
+    private int mOfflineColor = ContextCompat.getColor(getContext(), R.color.layer_ui_presence_offline);
 
     public PresenceView(Context context) {
         super(context);

@@ -37,9 +37,9 @@ test:
     - ./gradlew connectedAndroidTest test -PpreDexEnabled=false --console=plain
 
     # Copy the build outputs to artifacts
-    - cp -r build/outputs $CIRCLE_ARTIFACTS
+    - cp -r layer-atlas/build/outputs $CIRCLE_ARTIFACTS
     # Copy the test results to the test results directory.
-    - cp -r build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
+    - cp -r layer-atlas/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
 
     # Take a screenshot - Might be helpful if things are going wrong
     - adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > $CIRCLE_ARTIFACTS/screen-$(date +"%T").png

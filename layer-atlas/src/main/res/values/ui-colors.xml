@@ -61,4 +61,12 @@
     <color name="layer_ui_delete_icon">@android:color/white</color>
 
     <color name="layer_ui_image_popup_background">@android:color/black</color>
+
+    <color name="layer_ui_presence_available">#4fbf62</color>
+    <color name="layer_ui_presence_busy">#e6443f</color>
+    <color name="layer_ui_presence_away">#f7ca40</color>
+    <color name="layer_ui_presence_invisible">#50c062</color>
+    <color name="layer_ui_presence_offline">#99999c</color>
+
+
 </resources>
