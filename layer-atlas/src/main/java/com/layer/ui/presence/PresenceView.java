@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -44,14 +43,14 @@ public class PresenceView extends View {
     }
 
     public void setParticipants(Set<Identity> participants) {
-        showPresenceIfIdentityIsOne(participants);
+        processSetParticipants(participants);
     }
 
     public void setParticipants(Identity... participants) {
-        showPresenceIfIdentityIsOne(Arrays.asList(participants));
+        processSetParticipants(Arrays.asList(participants));
     }
 
-    private void showPresenceIfIdentityIsOne(Collection<Identity> participants) {
+    private void processSetParticipants(Collection<Identity> participants) {
         if (participants.size() == 1) {
             mIdentity = participants.iterator().next();
             setVisibility(VISIBLE);
@@ -90,9 +89,6 @@ public class PresenceView extends View {
             case BUSY:
                 drawBusy(canvas);
                 break;
-            default:
-                drawDefault(canvas);
-                break;
         }
     }
 
@@ -118,10 +114,6 @@ public class PresenceView extends View {
 
     public void drawBusy(Canvas canvas) {
         mPresencePaint.setColor(mBusyColor);
-        drawPresence(canvas, false);
-    }
-
-    public void drawDefault(Canvas canvas) {
         drawPresence(canvas, false);
     }
 
@@ -158,11 +150,6 @@ public class PresenceView extends View {
         if (makeCircleHollow) {
             canvas.drawCircle(presenceCenterX, presenceCenterY, (presenceInnerRadius / 2f), mBackgroundPaint);
         }
-    }
-
-    @VisibleForTesting
-    public int getPresenceColor() {
-        return mPresencePaint.getColor();
     }
 
     private void parseStyle(Context context, AttributeSet attrs, int defStyle) {
