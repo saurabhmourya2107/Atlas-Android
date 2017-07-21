@@ -54,7 +54,7 @@
             android:orientation="vertical"
             android:paddingLeft="@dimen/layer_ui_padding_normal"
             android:paddingRight="@dimen/layer_ui_padding_normal"
-            android:visibility="@{viewModel.isClusterSpaceVisible() ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.clusterSpaceVisible ? View.VISIBLE : View.GONE}"
             android:paddingTop="@dimen/layer_ui_message_cluster_space">
 
             <LinearLayout
@@ -63,6 +63,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal"
+                android:visibility="@{viewModel.bindDateTimeForMessage ? View.VISIBLE : View.GONE}"
                 android:paddingBottom="@dimen/layer_ui_message_item_time_group_padding_bottom"
                 android:paddingTop="@dimen/layer_ui_message_item_time_group_padding_top">
 
@@ -70,7 +71,7 @@
                     android:id="@+id/time_group_day"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="[day]"
+                    android:text="@{viewModel.timeGroupDay}"
                     android:textColor="@color/layer_ui_text_gray"
                     android:textSize="@dimen/layer_ui_text_size_message_item_metadata"
                     android:textStyle="bold" />
@@ -79,9 +80,9 @@
                     android:id="@+id/time_group_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="[time]"
+                    android:visibility="@{viewModel.timeGroupVisible ? View.VISIBLE : View.GONE}"
+                    android:text="@{viewModel.groupTime}"
                     android:textColor="@color/layer_ui_text_gray"
-                    android:visibility="@{viewModel.isTimeGroupVisible ? View.VISIBLE : View.GONE}"
                     android:textSize="@dimen/layer_ui_text_size_message_item_metadata" />
             </LinearLayout>
 
@@ -97,7 +98,7 @@
                 android:layout_marginBottom="@dimen/layer_ui_message_item_sender_margin_bottom"
                 android:layout_marginLeft="@dimen/layer_ui_message_item_sender_margin_left"
                 android:text="@{viewModel.getSender}"
-                android:visibility="@{viewModel.shouldDisplayName() ? View.VISIBLE : View.GONE}"
+                android:visibility="@{viewModel.displayName ? View.VISIBLE : View.GONE}"
                 android:textColor="@color/layer_ui_text_gray"
                 android:textSize="@dimen/layer_ui_text_size_message_item_metadata" />
 
@@ -110,6 +111,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
+                    android:visibility="@{viewModel.displayAvatar}"
                     android:layout_marginRight="@dimen/layer_ui_padding_narrow">
 
                     <com.layer.ui.avatar.AvatarView
@@ -117,7 +119,6 @@
                         android:layout_width="@dimen/layer_ui_message_avatar_item_single"
                         android:layout_height="@dimen/layer_ui_message_avatar_item_single"
                         android:layout_gravity="bottom"
-                        android:visibility="@{viewModel.shouldDisplayAvatar()}"
                         app:participants="@{viewModel.getParticipants()}"
                         android:layout_marginRight="@dimen/layer_ui_padding_narrow" />
 
@@ -136,7 +137,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/layer_ui_padding_normal"
                     android:minHeight="@dimen/layer_ui_message_item_cell_min_height"
-                    android:alpha="@{viewModel.isMessageSent ? 1.0f : 0.5f }"
+                    android:alpha="@{viewModel.messageSent ? 1.0f : 0.5f }"
                     android:minWidth="@dimen/layer_ui_message_item_cell_min_width" />
 
             </LinearLayout>

@@ -1,35 +1,77 @@
 package com.layer.ui.messageitem;
 
 import android.content.Context;
-import android.databinding.BaseObservable;
 import android.view.View;
 
+import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Identity;
 import com.layer.sdk.messaging.Message;
 import com.layer.ui.R;
 import com.layer.ui.adapters.MessagesAdapter;
 import com.layer.ui.util.Util;
 
+import java.text.DateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-public class MessageItemViewModel extends BaseObservable {
+public class MessageItemViewModel {
+    private final LayerClient mLayerClient;
     private MessagesAdapter.Cluster mCluster;
     private Message mMessage;
     private Context mContext;
     private boolean mOneOnOne;
     private boolean mShouldShowAvatarInOneOnOneConversations;
+    private final DateFormat mTimeFormat;
+    private Integer mRecipientStatusPosition;
+    private boolean mReadReceiptsEnabled;
+    private int mPosition;
+    private boolean mIsCellTypeMe;
+    private int mReadCount = 0;
+    private Map<Identity, Message.RecipientStatus> mStatuses;
+    private boolean delivered;
 
 
 
-    public MessageItemViewModel(Context context, Message message, MessagesAdapter.Cluster cluster,
-            boolean oneOnOne, boolean shouldShowAvatarInOneOnOneConversations) {
+    public MessageItemViewModel(Context context, LayerClient layerClient, Message message,
+            MessagesAdapter.Cluster cluster, boolean oneOnOne, int position,
+            boolean shouldShowAvatarInOneOnOneConversations, int recipientStatusPosition, boolean readReceiptsEnabled, boolean isCellTypeMe) {
         mMessage = message;
         mCluster = cluster;
         mContext = context;
         mOneOnOne = oneOnOne;
+        mLayerClient = layerClient;
+        mPosition = position;
+        mIsCellTypeMe = isCellTypeMe;
+        mRecipientStatusPosition = recipientStatusPosition;
+        mReadReceiptsEnabled = readReceiptsEnabled;
+        mStatuses = mMessage.getRecipientStatus();
         mShouldShowAvatarInOneOnOneConversations = shouldShowAvatarInOneOnOneConversations;
+        mTimeFormat = android.text.format.DateFormat.getTimeFormat(context);
+        updateValuesForRecipient();
+    }
+
+    private void updateValuesForRecipient() {
+        if (mIsCellTypeMe && (mReadReceiptsEnabled && mRecipientStatusPosition != null && mRecipientStatusPosition == mPosition)) {
+            delivered = false;
+            for (Map.Entry<Identity, Message.RecipientStatus> entry : mStatuses.entrySet()) {
+                // Only show receipts for other members
+                if (entry.getKey().equals(mLayerClient.getAuthenticatedUser())) continue;
+                // Skip receipts for members no longer in the conversation
+                if (entry.getValue() == null) continue;
+
+                switch (entry.getValue()) {
+                    case READ:
+                        mReadCount++;
+                        break;
+                    case DELIVERED:
+                        delivered = true;
+                        break;
+                }
+            }
+        }
     }
 
     public boolean isClusterSpaceVisible() {
@@ -60,13 +102,13 @@ public class MessageItemViewModel extends BaseObservable {
         return Util.getDisplayName(mMessage.getSender());
     }
 
-    public boolean shouldDisplayName() {
+    public boolean isDisplayName() {
         return !mOneOnOne && (mCluster.mClusterWithPrevious == null
                 || mCluster.mClusterWithPrevious == MessagesAdapter.ClusterType.NEW_SENDER);
     }
 
     //TODO : Rewrite method......
-    public int shouldDisplayAvatar() {
+    public int isDisplayAvatar() {
         if (mOneOnOne) {
             if (mShouldShowAvatarInOneOnOneConversations) {
                 return View.VISIBLE;
@@ -85,92 +127,42 @@ public class MessageItemViewModel extends BaseObservable {
         return new HashSet<>(Arrays.asList(mMessage.getSender()));
     }
 
-   /* //==============================================================================================
-    // Clustering
-    //==============================================================================================
-    // TODO: optimize by limiting search to positions in- and around- visible range
-    private Cluster getClustering(Message message, int position) {
-        Cluster result = mClusterCache.get(message.getId());
-        if (result == null) {
-            result = new Cluster();
-            mClusterCache.put(message.getId(), result);
-        }
-
-        int previousPosition = position - 1;
-        Message previousMessage = (previousPosition >= 0) ? getItem(previousPosition) : null;
-        if (previousMessage != null) {
-            result.mDateBoundaryWithPrevious = isDateBoundary(previousMessage.getReceivedAt(), message.getReceivedAt());
-            result.mClusterWithPrevious = MessagesAdapter.ClusterType.fromMessages(previousMessage, message);
-
-            Cluster previousCluster = mClusterCache.get(previousMessage.getId());
-            if (previousCluster == null) {
-                previousCluster = new MessagesAdapter.Cluster();
-                mClusterCache.put(previousMessage.getId(), previousCluster);
-            } else {
-                // does the previous need to change its clustering?
-                if ((previousCluster.mClusterWithNext != result.mClusterWithPrevious) ||
-                        (previousCluster.mDateBoundaryWithNext != result.mDateBoundaryWithPrevious)) {
-                    requestUpdate(previousMessage, previousPosition);
-                }
-            }
-            previousCluster.mClusterWithNext = result.mClusterWithPrevious;
-            previousCluster.mDateBoundaryWithNext = result.mDateBoundaryWithPrevious;
-        }
-
-        int nextPosition = position + 1;
-        Message nextMessage = (nextPosition < getItemCount()) ? getItem(nextPosition) : null;
-        if (nextMessage != null) {
-            result.mDateBoundaryWithNext = isDateBoundary(message.getReceivedAt(), nextMessage.getReceivedAt());
-            result.mClusterWithNext = MessagesAdapter.ClusterType.fromMessages(message, nextMessage);
-
-            MessagesAdapter.Cluster nextCluster = mClusterCache.get(nextMessage.getId());
-            if (nextCluster == null) {
-                nextCluster = new MessagesAdapter.Cluster();
-                mClusterCache.put(nextMessage.getId(), nextCluster);
-            } else {
-                // does the next need to change its clustering?
-                if ((nextCluster.mClusterWithPrevious != result.mClusterWithNext) ||
-                        (nextCluster.mDateBoundaryWithPrevious != result.mDateBoundaryWithNext)) {
-                    requestUpdate(nextMessage, nextPosition);
-                }
-            }
-            nextCluster.mClusterWithPrevious = result.mClusterWithNext;
-            nextCluster.mDateBoundaryWithPrevious = result.mDateBoundaryWithNext;
-        }
-
-        return result;
+    public String getTimeGroupDay() {
+        Date receivedAt = mMessage.getReceivedAt();
+        if (receivedAt == null) receivedAt = new Date();
+        return Util.formatTimeDay(mContext, receivedAt);
     }
 
-    private static class Cluster {
-        public boolean mDateBoundaryWithPrevious;
-        public ClusterType mClusterWithPrevious;
-
-        public boolean mDateBoundaryWithNext;
-        public ClusterType mClusterWithNext;
+    public String getGroupTime() {
+        Date receivedAt = mMessage.getReceivedAt();
+        return mTimeFormat.format(receivedAt.getTime());
     }
 
-    private enum ClusterType {
-        NEW_SENDER,
-        LESS_THAN_MINUTE,
-        LESS_THAN_HOUR,
-        MORE_THAN_HOUR;
+    public boolean isBindDateTimeForMessage() {
+        return (mCluster.mClusterWithPrevious == null)
+                || mCluster.mClusterWithPrevious == MessagesAdapter.ClusterType.MORE_THAN_HOUR;
+    }
 
-        private static final long MILLIS_MINUTE = 60 * 1000;
-        private static final long MILLIS_HOUR = 60 * MILLIS_MINUTE;
+    public boolean isRecipientStatusVisible() {
+        return mIsCellTypeMe && (mReadReceiptsEnabled && mRecipientStatusPosition != null && mRecipientStatusPosition == mPosition);
+    }
 
-        public static ClusterType fromMessages(Message older, Message newer) {
-            // Different users?
-            if (!older.getSender().equals(newer.getSender())) return NEW_SENDER;
-
-            // Time clustering for same user?
-            Date oldReceivedAt = older.getReceivedAt();
-            Date newReceivedAt = newer.getReceivedAt();
-            if (oldReceivedAt == null || newReceivedAt == null) return LESS_THAN_MINUTE;
-            long delta = Math.abs(newReceivedAt.getTime() - oldReceivedAt.getTime());
-            if (delta <= MILLIS_MINUTE) return LESS_THAN_MINUTE;
-            if (delta <= MILLIS_HOUR) return LESS_THAN_HOUR;
-            return MORE_THAN_HOUR;
+    public String getRecipientStatus() {
+        if (mIsCellTypeMe && (mReadReceiptsEnabled && mRecipientStatusPosition != null && mRecipientStatusPosition == mPosition)) {
+            if (mReadCount > 0) {
+                // Use 2 to include one other participant plus the current user
+                if (mStatuses.size() > 2) {
+                    return mContext.getResources()
+                            .getQuantityString(R.plurals.layer_ui_message_item_read_muliple_participants,
+                                    mReadCount, mReadCount);
+                } else {
+                    return mContext.getString(R.string.layer_ui_message_item_read);
+                }
+            } else if (delivered) {
+                return mContext.getString(R.string.layer_ui_message_item_delivered);
+            }
         }
-    }*/
+        return "";
 
+    }
 }
