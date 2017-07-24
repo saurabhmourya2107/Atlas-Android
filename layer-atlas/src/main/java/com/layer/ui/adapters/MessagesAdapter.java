@@ -32,7 +32,6 @@ import com.layer.ui.util.IdentityRecyclerViewEventListener;
 import com.layer.ui.util.Log;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
 
-import java.text.DateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -83,9 +82,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     protected final Map<CellFactory, Integer> mTheirViewTypesByCell = new HashMap<CellFactory, Integer>();
 
     // Dates and Clustering
-    private final Map<Uri, Cluster> mClusterCache = new HashMap<Uri, Cluster>();
-    private final DateFormat mDateFormat;
-    private final DateFormat mTimeFormat;
+    private final Map<Uri, Cluster> mClusterCache = new HashMap<>();
 
     private View mFooterView;
     private int mFooterPosition = 0;
@@ -108,8 +105,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         mLayerClient = layerClient;
         mLayoutInflater = LayoutInflater.from(context);
         mUiThreadHandler = new Handler(Looper.getMainLooper());
-        mDateFormat = android.text.format.DateFormat.getDateFormat(context);
-        mTimeFormat = android.text.format.DateFormat.getTimeFormat(context);
         mDisplayMetrics = context.getResources().getDisplayMetrics();
 
         mQueryController = layerClient.newRecyclerViewController(null, null, this);
@@ -345,17 +340,33 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         // Clustering and dates
         Cluster cluster = getClustering(message, position);
 
+        boolean isClusterSpaceVisible = cluster.mClusterWithPrevious == ClusterType.NEW_SENDER
+                || cluster.mClusterWithPrevious == ClusterType.LESS_THAN_HOUR;
+        boolean isTimeGroupVisible = !((cluster.mClusterWithPrevious == ClusterType.LESS_THAN_MINUTE) ||
+                (cluster.mClusterWithPrevious == ClusterType.NEW_SENDER ||
+                        cluster.mClusterWithPrevious == ClusterType.LESS_THAN_HOUR));
+        boolean isDisplayName = !oneOnOne && (cluster.mClusterWithPrevious == null
+                || cluster.mClusterWithPrevious == ClusterType.NEW_SENDER);
+        boolean shouldBindDateTimeForMessage = cluster.mClusterWithPrevious == null || (cluster.mDateBoundaryWithPrevious
+                || cluster.mClusterWithPrevious == ClusterType.MORE_THAN_HOUR);
+        boolean shouldClusterBeVisible = cluster.mClusterWithNext == null
+                || cluster.mClusterWithNext != ClusterType.LESS_THAN_MINUTE;
+
 
         MessageItemViewModel messageItemViewModel = new MessageItemViewModel.Builder(mLayerClient)
                 .setContext(viewHolder.getCell().getContext())
                 .setMessage(message)
-                .setCluster(cluster)
                 .setOneOnOne(oneOnOne)
                 .setPosition(position)
                 .setShouldShowAvatarInOneOnOneConversations(mShouldShowAvatarInOneOnOneConversations)
-                .setRecipientStatusPosition(mRecipientStatusPosition)
+                .setIsRecipientStatusPosition(mRecipientStatusPosition)
                 .setReadReceiptsEnabled(mReadReceiptsEnabled)
                 .setCellTypeMe(cellType.mMe)
+                .setClusterSpaceVisible(isClusterSpaceVisible)
+                .setIsTimeGroupVisible(isTimeGroupVisible)
+                .setIsDisplayName(isDisplayName)
+                .setIsBindDateTimeForMessage(shouldBindDateTimeForMessage)
+                .setShouldClusterBeVisible(shouldClusterBeVisible)
                 .build();
 
         viewHolder.bind(messageItemViewModel);
@@ -671,7 +682,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
     }
 
-    public enum ClusterType {
+    private enum ClusterType {
         NEW_SENDER,
         LESS_THAN_MINUTE,
         LESS_THAN_HOUR,
@@ -695,22 +706,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         }
     }
 
-    public static class Cluster {
+    private static class Cluster {
         public boolean mDateBoundaryWithPrevious;
         public ClusterType mClusterWithPrevious;
 
         public boolean mDateBoundaryWithNext;
         public ClusterType mClusterWithNext;
-    }
-
-    private static class MessagePosition {
-        public Message mMessage;
-        public int mPosition;
-
-        public MessagePosition(Message message, int position) {
-            mMessage = message;
-            mPosition = position;
-        }
     }
 
     private static class CellType {
