@@ -1,7 +1,9 @@
 package com.layer.ui.messageitem;
 
 import android.content.Context;
+import android.databinding.BindingAdapter;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Identity;
@@ -33,23 +35,19 @@ public class MessageItemViewModel {
     private Map<Identity, Message.RecipientStatus> mStatuses;
     private boolean delivered;
 
-
-
-    public MessageItemViewModel(Context context, LayerClient layerClient, Message message,
-            MessagesAdapter.Cluster cluster, boolean oneOnOne, int position,
-            boolean shouldShowAvatarInOneOnOneConversations, int recipientStatusPosition, boolean readReceiptsEnabled, boolean isCellTypeMe) {
-        mMessage = message;
-        mCluster = cluster;
-        mContext = context;
-        mOneOnOne = oneOnOne;
-        mLayerClient = layerClient;
-        mPosition = position;
-        mIsCellTypeMe = isCellTypeMe;
-        mRecipientStatusPosition = recipientStatusPosition;
-        mReadReceiptsEnabled = readReceiptsEnabled;
+    public MessageItemViewModel(Builder builder) {
+        mMessage = builder.mMessage;
+        mCluster = builder.mCluster;
+        mContext = builder.mContext;
+        mOneOnOne = builder.mOneOnOne;
+        mLayerClient = builder.mLayerClient;
+        mPosition = builder.mPosition;
+        mIsCellTypeMe = builder.mIsCellTypeMe;
+        mRecipientStatusPosition = builder.mRecipientStatusPosition;
+        mReadReceiptsEnabled = builder.mReadReceiptsEnabled;
         mStatuses = mMessage.getRecipientStatus();
-        mShouldShowAvatarInOneOnOneConversations = shouldShowAvatarInOneOnOneConversations;
-        mTimeFormat = android.text.format.DateFormat.getTimeFormat(context);
+        mShouldShowAvatarInOneOnOneConversations = builder.mShouldShowAvatarInOneOnOneConversations;
+        mTimeFormat = android.text.format.DateFormat.getTimeFormat(mContext);
         updateValuesForRecipient();
     }
 
@@ -75,8 +73,21 @@ public class MessageItemViewModel {
     }
 
     public boolean isClusterSpaceVisible() {
-        return mCluster.mClusterWithPrevious == MessagesAdapter.ClusterType.NEW_SENDER ||
-                mCluster.mClusterWithPrevious == MessagesAdapter.ClusterType.LESS_THAN_HOUR;
+        if (mCluster.mClusterWithPrevious == null) {
+            // No previous message, so no gap
+            return false;
+        } else if (mCluster.mDateBoundaryWithPrevious || mCluster.mClusterWithPrevious == MessagesAdapter.ClusterType.MORE_THAN_HOUR) {
+            // Crossed into a new day, or > 1hr lull in conversation
+            return false;
+        } else if (mCluster.mClusterWithPrevious == MessagesAdapter.ClusterType.LESS_THAN_MINUTE) {
+            // Same sender with < 1m gap
+            return false;
+        } else if (mCluster.mClusterWithPrevious == MessagesAdapter.ClusterType.NEW_SENDER || mCluster.mClusterWithPrevious == MessagesAdapter.ClusterType.LESS_THAN_HOUR) {
+            // New sender or > 1m gap
+            return true;
+        }
+
+        return false;
     }
 
     public boolean isTimeGroupVisible() {
@@ -107,20 +118,26 @@ public class MessageItemViewModel {
                 || mCluster.mClusterWithPrevious == MessagesAdapter.ClusterType.NEW_SENDER);
     }
 
-    //TODO : Rewrite method......
-    public int isDisplayAvatar() {
-        if (mOneOnOne) {
-            if (mShouldShowAvatarInOneOnOneConversations) {
-                return View.VISIBLE;
+    @BindingAdapter("android:visibility")
+    public static void isDisplayAvatar(FrameLayout frameLayout, AvatarViewDisplayWrapper avatarViewDisplayWrapper) {
+        if (avatarViewDisplayWrapper.mOneOnOne) {
+            if (avatarViewDisplayWrapper.mShouldShowAvatarInOneOnOneConversations) {
+                frameLayout.setVisibility(View.VISIBLE);
             } else {
-                return View.GONE;
+                frameLayout.setVisibility(View.GONE);
             }
-        } else if (mCluster.mClusterWithNext == null
-                || mCluster.mClusterWithNext != MessagesAdapter.ClusterType.LESS_THAN_MINUTE) {
-            return View.VISIBLE;
+        } else if (avatarViewDisplayWrapper.mShouldMClusterBeDisplayed) {
+            frameLayout.setVisibility(View.VISIBLE);
         } else {
-            return View.VISIBLE;
+            frameLayout.setVisibility(View.INVISIBLE);
         }
+    }
+
+    public AvatarViewDisplayWrapper getAvatarDisplayWrapper() {
+        boolean shouldClusterBeVisible = mCluster.mClusterWithNext == null
+                || mCluster.mClusterWithNext != MessagesAdapter.ClusterType.LESS_THAN_MINUTE;
+        return new AvatarViewDisplayWrapper(mOneOnOne, mShouldShowAvatarInOneOnOneConversations,
+                shouldClusterBeVisible);
     }
 
     public Set<Identity> getParticipants() {
@@ -139,8 +156,21 @@ public class MessageItemViewModel {
     }
 
     public boolean isBindDateTimeForMessage() {
-        return (mCluster.mClusterWithPrevious == null)
-                || mCluster.mClusterWithPrevious == MessagesAdapter.ClusterType.MORE_THAN_HOUR;
+
+        if (mCluster.mClusterWithPrevious == null) {
+            // No previous message, so no gap
+            return true;
+        } else if (mCluster.mDateBoundaryWithPrevious || mCluster.mClusterWithPrevious == MessagesAdapter.ClusterType.MORE_THAN_HOUR) {
+            // Crossed into a new day, or > 1hr lull in conversation
+            return true;
+        } else if (mCluster.mClusterWithPrevious == MessagesAdapter.ClusterType.LESS_THAN_MINUTE) {
+            // Same sender with < 1m gap
+            return false;
+        } else if (mCluster.mClusterWithPrevious == MessagesAdapter.ClusterType.NEW_SENDER || mCluster.mClusterWithPrevious == MessagesAdapter.ClusterType.LESS_THAN_HOUR) {
+            // New sender or > 1m gap
+            return false;
+        }
+        return false;
     }
 
     public boolean isRecipientStatusVisible() {
@@ -163,6 +193,86 @@ public class MessageItemViewModel {
             }
         }
         return "";
+    }
 
+    public static class Builder {
+        private final LayerClient mLayerClient;
+        private MessagesAdapter.Cluster mCluster;
+        private Message mMessage;
+        private Context mContext;
+        private boolean mOneOnOne;
+        private boolean mShouldShowAvatarInOneOnOneConversations;
+        private Integer mRecipientStatusPosition;
+        private boolean mReadReceiptsEnabled;
+        private int mPosition;
+        private boolean mIsCellTypeMe;
+
+        public Builder(LayerClient layerClient) {
+            mLayerClient = layerClient;
+        }
+
+        public Builder setCluster(MessagesAdapter.Cluster cluster) {
+            mCluster = cluster;
+            return this;
+        }
+
+        public Builder setMessage(Message message) {
+            mMessage = message;
+            return this;
+        }
+
+        public Builder setContext(Context context) {
+            mContext = context;
+            return this;
+        }
+
+        public Builder setOneOnOne(boolean oneOnOne) {
+            mOneOnOne = oneOnOne;
+            return this;
+        }
+
+        public Builder setShouldShowAvatarInOneOnOneConversations(
+                boolean shouldShowAvatarInOneOnOneConversations) {
+            mShouldShowAvatarInOneOnOneConversations = shouldShowAvatarInOneOnOneConversations;
+            return this;
+        }
+
+        public Builder setRecipientStatusPosition(Integer recipientStatusPosition) {
+            mRecipientStatusPosition = recipientStatusPosition;
+            return this;
+        }
+
+        public Builder setReadReceiptsEnabled(boolean readReceiptsEnabled) {
+            mReadReceiptsEnabled = readReceiptsEnabled;
+            return this;
+        }
+
+        public Builder setPosition(int position) {
+            mPosition = position;
+            return this;
+        }
+
+        public Builder setCellTypeMe(boolean cellTypeMe) {
+            mIsCellTypeMe = cellTypeMe;
+            return this;
+        }
+
+        public MessageItemViewModel build() {
+            return new MessageItemViewModel(this);
+        }
+    }
+
+    public static class AvatarViewDisplayWrapper{
+        private boolean mOneOnOne;
+        private boolean mShouldShowAvatarInOneOnOneConversations;
+        private boolean mShouldMClusterBeDisplayed;
+
+        public AvatarViewDisplayWrapper(boolean oneOnOne,
+                boolean shouldShowAvatarInOneOnOneConversations,
+                boolean shouldMClusterBeDisplayed) {
+            mOneOnOne = oneOnOne;
+            mShouldShowAvatarInOneOnOneConversations = shouldShowAvatarInOneOnOneConversations;
+            mShouldMClusterBeDisplayed = shouldMClusterBeDisplayed;
+        }
     }
 }

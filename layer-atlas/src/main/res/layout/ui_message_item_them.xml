@@ -54,7 +54,6 @@
             android:orientation="vertical"
             android:paddingLeft="@dimen/layer_ui_padding_normal"
             android:paddingRight="@dimen/layer_ui_padding_normal"
-            android:visibility="@{viewModel.clusterSpaceVisible ? View.VISIBLE : View.GONE}"
             android:paddingTop="@dimen/layer_ui_message_cluster_space">
 
             <LinearLayout
@@ -80,7 +79,6 @@
                     android:id="@+id/time_group_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="@{viewModel.timeGroupVisible ? View.VISIBLE : View.GONE}"
                     android:text="@{viewModel.groupTime}"
                     android:textColor="@color/layer_ui_text_gray"
                     android:textSize="@dimen/layer_ui_text_size_message_item_metadata" />
@@ -89,6 +87,7 @@
             <Space
                 android:id="@+id/cluster_space"
                 android:layout_width="match_parent"
+                android:visibility="@{viewModel.clusterSpaceVisible ? View.VISIBLE : View.GONE}"
                 android:layout_height="@dimen/layer_ui_message_cluster_space_gap" />
 
             <TextView
@@ -111,7 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:visibility="@{viewModel.displayAvatar}"
+                    android:visibility="@{viewModel.avatarDisplayWrapper}"
                     android:layout_marginRight="@dimen/layer_ui_padding_narrow">
 
                     <com.layer.ui.avatar.AvatarView
@@ -130,7 +129,7 @@
                         android:layout_gravity="bottom|right" />
 
                 </FrameLayout>
-
+'
                 <FrameLayout
                     android:id="@+id/cell"
                     android:layout_width="wrap_content"

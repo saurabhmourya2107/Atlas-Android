@@ -346,9 +346,18 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         Cluster cluster = getClustering(message, position);
 
 
-        MessageItemViewModel messageItemViewModel = new MessageItemViewModel(viewHolder.getCell().getContext(),
-                mLayerClient, message, cluster, oneOnOne, position, mShouldShowAvatarInOneOnOneConversations,
-                mRecipientStatusPosition, mReadReceiptsEnabled, cellType.mMe);
+        MessageItemViewModel messageItemViewModel = new MessageItemViewModel.Builder(mLayerClient)
+                .setContext(viewHolder.getCell().getContext())
+                .setMessage(message)
+                .setCluster(cluster)
+                .setOneOnOne(oneOnOne)
+                .setPosition(position)
+                .setShouldShowAvatarInOneOnOneConversations(mShouldShowAvatarInOneOnOneConversations)
+                .setRecipientStatusPosition(mRecipientStatusPosition)
+                .setReadReceiptsEnabled(mReadReceiptsEnabled)
+                .setCellTypeMe(cellType.mMe)
+                .build();
+
         viewHolder.bind(messageItemViewModel);
 
         if (!oneOnOne && (cluster.mClusterWithNext == null || cluster.mClusterWithNext != ClusterType.LESS_THAN_MINUTE)) {
