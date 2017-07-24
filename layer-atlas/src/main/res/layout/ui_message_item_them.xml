@@ -110,16 +110,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:visibility="@{viewModel.avatarDisplayWrapper}"
-                    android:layout_marginRight="@dimen/layer_ui_padding_narrow">
+                    android:layout_marginRight="@dimen/layer_ui_padding_narrow"
+                    android:visibility="@{viewModel.avatarDisplayWrapper}">
 
                     <com.layer.ui.avatar.AvatarView
                         android:id="@+id/avatar"
                         android:layout_width="@dimen/layer_ui_message_avatar_item_single"
                         android:layout_height="@dimen/layer_ui_message_avatar_item_single"
-                        android:layout_gravity="bottom"
-                        app:participants="@{viewModel.getParticipants()}"
-                        android:layout_marginRight="@dimen/layer_ui_padding_narrow" />
+                        app:participants="@{viewModel.getParticipants()}" />
 
 
                     <com.layer.ui.presence.PresenceView
@@ -129,7 +127,7 @@
                         android:layout_gravity="bottom|right" />
 
                 </FrameLayout>
-'
+
                 <FrameLayout
                     android:id="@+id/cell"
                     android:layout_width="wrap_content"
