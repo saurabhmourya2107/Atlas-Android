@@ -75,7 +75,6 @@ public class MessageItemViewModel extends BaseObservable {
 
     public void setParticipants(Identity identity) {
         mParticipants = Collections.singleton(identity);
-        notifyChange();
     }
 
     @Bindable
@@ -85,7 +84,6 @@ public class MessageItemViewModel extends BaseObservable {
 
     public void setTimeGroupDay(String timeGroupDay) {
         mTimeGroupDay = timeGroupDay;
-        notifyChange();
     }
 
     @Bindable
@@ -95,7 +93,6 @@ public class MessageItemViewModel extends BaseObservable {
 
     public void setIsBindDateTimeForMessage(boolean isBindDateTimeForMessage) {
         mIsBindDateTimeForMessage = isBindDateTimeForMessage;
-        notifyChange();
     }
 
     @Bindable
@@ -105,7 +102,6 @@ public class MessageItemViewModel extends BaseObservable {
 
     public void setRecipientStatus(String recipientStatus) {
         mRecipientStatus = recipientStatus;
-        notifyChange();
     }
 
     @Bindable
@@ -115,7 +111,6 @@ public class MessageItemViewModel extends BaseObservable {
 
     public void setMessageSent(boolean isMessageSent) {
         mIsMessageSent = isMessageSent;
-        notifyChange();
     }
 
     @Bindable
@@ -125,12 +120,10 @@ public class MessageItemViewModel extends BaseObservable {
 
     public void setSender(String sender) {
         mSender = sender;
-        notifyChange();
     }
 
     public void setIsDisplayName(boolean isDisplayName) {
         mIsDisplayName = isDisplayName;
-        notifyChange();
     }
 
     @Bindable
@@ -145,7 +138,6 @@ public class MessageItemViewModel extends BaseObservable {
 
     public void setGroupTime(String groupTime) {
         mGroupTime = groupTime;
-        notifyChange();
     }
 
     @Bindable
@@ -155,6 +147,5 @@ public class MessageItemViewModel extends BaseObservable {
 
     public void setRecipientStatusVisible(boolean recipientStatusVisible) {
         mRecipientStatusVisible = recipientStatusVisible;
-        notifyChange();
     }
 }

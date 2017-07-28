@@ -792,6 +792,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             mMessageItemViewModel.setShouldClusterBeVisible(shouldClusterBeVisible);
             mMessageItemViewModel.setParticipants(message.getSender());
             mMessageItemViewModel.setMessageSent(message.isSent());
+            mMessageItemViewModel.notifyChange();
 
             if (mViewDataBinding instanceof UiMessageItemThemBinding) {
                 UiMessageItemThemBinding uiMessageItemThemBinding =
