@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright 2015 Layer. All rights reserved.
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright 2015 Layer. All rights reserved.
     
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,8 +14,11 @@
 -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
+
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.layer.ui.messageitem.MessageItemViewModel" />
@@ -62,9 +64,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:visibility="@{viewModel.bindDateTimeForMessage ? View.VISIBLE : View.GONE}"
                 android:paddingBottom="@dimen/layer_ui_message_item_time_group_padding_bottom"
-                android:paddingTop="@dimen/layer_ui_message_item_time_group_padding_top">
+                android:paddingTop="@dimen/layer_ui_message_item_time_group_padding_top"
+                android:visibility="@{viewModel.bindDateTimeForMessage ? View.VISIBLE : View.GONE}">
 
                 <TextView
                     android:id="@+id/time_group_day"
@@ -87,8 +89,8 @@
             <Space
                 android:id="@+id/cluster_space"
                 android:layout_width="match_parent"
-                android:visibility="@{viewModel.clusterSpaceVisible ? View.VISIBLE : View.GONE}"
-                android:layout_height="@dimen/layer_ui_message_cluster_space_gap" />
+                android:layout_height="@dimen/layer_ui_message_cluster_space_gap"
+                android:visibility="@{viewModel.clusterSpaceVisible ? View.VISIBLE : View.GONE}" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -118,10 +120,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_marginRight="@dimen/layer_ui_message_item_receipt_margin"
-                android:visibility="@{viewModel.recipientStatusVisible ? View.VISIBLE : View.GONE}"
                 android:text="@{viewModel.recipientStatus}"
                 android:textColor="@color/layer_ui_text_gray"
-                android:textSize="@dimen/layer_ui_text_size_message_item_metadata" />
+                android:textSize="@dimen/layer_ui_text_size_message_item_metadata"
+                android:visibility="@{viewModel.recipientStatusVisible ? View.VISIBLE : View.GONE}" />
 
         </LinearLayout>
     </com.layer.ui.util.views.SwipeableItem>

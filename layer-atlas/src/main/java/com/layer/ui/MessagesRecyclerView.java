@@ -27,6 +27,7 @@ import android.view.View;
 import com.layer.ui.adapters.MessagesAdapter;
 import com.layer.ui.messagetypes.CellFactory;
 import com.layer.ui.messagetypes.MessageStyle;
+import com.layer.ui.util.LayerDateFormatter;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
 import com.layer.ui.util.itemanimators.NoChangeAnimator;
 import com.layer.ui.util.views.SwipeableItem;
@@ -58,13 +59,14 @@ public class MessagesRecyclerView extends RecyclerView {
         super(context);
     }
 
-    public MessagesRecyclerView init(LayerClient layerClient, ImageCacheWrapper imageCacheWrapper) {
+    public MessagesRecyclerView init(LayerClient layerClient, ImageCacheWrapper imageCacheWrapper,
+            LayerDateFormatter layerDateFormatter) {
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mLayoutManager.setStackFromEnd(true);
         setLayoutManager(mLayoutManager);
 
         // Create an adapter that auto-scrolls if we're already at the bottom
-        mAdapter = new MessagesAdapter(getContext(), layerClient, imageCacheWrapper)
+        mAdapter = new MessagesAdapter(getContext(), layerClient, imageCacheWrapper, layerDateFormatter)
                 .setRecyclerView(this)
                 .setOnMessageAppendListener(new MessagesAdapter.OnMessageAppendListener() {
                     @Override

@@ -22,8 +22,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.layer.ui.BuildConfig;
-import com.layer.ui.R;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.exceptions.LayerException;
 import com.layer.sdk.listeners.LayerAuthenticationListener;
@@ -31,19 +29,13 @@ import com.layer.sdk.listeners.LayerProgressListener;
 import com.layer.sdk.messaging.Identity;
 import com.layer.sdk.messaging.MessagePart;
 import com.layer.sdk.query.Queryable;
+import com.layer.ui.BuildConfig;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Util {
-    private static final int TIME_HOURS_24 = 24 * 60 * 60 * 1000;
-    private static final SimpleDateFormat DAY_OF_WEEK = new SimpleDateFormat("EEE, LLL dd,", Locale.getDefault());
 
     /**
      * Returns the app version name.
@@ -117,58 +109,7 @@ public class Util {
         return identity.getDisplayName();
     }
 
-    public static String formatTime(Context context, Date date, DateFormat timeFormat, DateFormat dateFormat) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        long todayMidnight = cal.getTimeInMillis();
-        long yesterMidnight = todayMidnight - TIME_HOURS_24;
-        long weekAgoMidnight = todayMidnight - TIME_HOURS_24 * 7;
 
-        String timeText;
-        if (date.getTime() > todayMidnight) {
-            timeText = timeFormat.format(date.getTime());
-        } else if (date.getTime() > yesterMidnight) {
-            timeText = context.getString(R.string.layer_ui_time_yesterday);
-        } else if (date.getTime() > weekAgoMidnight) {
-            cal.setTime(date);
-            timeText = context.getResources().getStringArray(R.array.layer_ui_time_days_of_week)[cal.get(Calendar.DAY_OF_WEEK) - 1];
-        } else {
-            timeText = dateFormat.format(date);
-        }
-        return timeText;
-    }
-
-    /**
-     * Returns Today, Yesterday, the day of the week within one week, or a date if greater.
-     *
-     * @param context
-     * @param date
-     * @return
-     */
-    public static String formatTimeDay(Context context, Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        long todayMidnight = cal.getTimeInMillis();
-        long yesterdayMidnight = todayMidnight - TIME_HOURS_24;
-        long weekAgoMidnight = todayMidnight - TIME_HOURS_24 * 7;
-
-        String timeBarDayText;
-        if (date.getTime() > todayMidnight) {
-            timeBarDayText = context.getString(R.string.layer_ui_time_today);
-        } else if (date.getTime() > yesterdayMidnight) {
-            timeBarDayText = context.getString(R.string.layer_ui_time_yesterday);
-        } else if (date.getTime() > weekAgoMidnight) {
-            cal.setTime(date);
-            timeBarDayText = context.getResources().getStringArray(R.array.layer_ui_time_days_of_week)[cal.get(Calendar.DAY_OF_WEEK) - 1];
-        } else {
-            timeBarDayText = DAY_OF_WEEK.format(date);
-        }
-        return timeBarDayText;
-    }
 
     /**
      * Returns int[] {scaledWidth, scaledHeight} for dimensions that fit within the given maxWidth,
