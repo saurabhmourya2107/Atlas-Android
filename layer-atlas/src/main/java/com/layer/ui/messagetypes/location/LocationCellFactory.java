@@ -2,6 +2,7 @@ package com.layer.ui.messagetypes.location;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.ViewDataBinding;
 import android.net.Uri;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.RecyclerView;
@@ -11,15 +12,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.layer.ui.R;
+import com.layer.ui.databinding.UiMessageItemCellImageBinding;
 import com.layer.ui.messagetypes.CellFactory;
 import com.layer.ui.util.Log;
 import com.layer.ui.util.Util;
-import com.layer.ui.util.imagecache.transformations.RoundedTransform;
+import com.layer.ui.util.imagecache.ImageCacheWrapper;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Message;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
+import com.layer.ui.util.imagecache.ImageWrapper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +28,7 @@ import java.net.URLEncoder;
 
 public class LocationCellFactory extends
         CellFactory<LocationCellFactory.CellHolder, LocationCellFactory.Location> implements View.OnClickListener {
-    private static final String PICASSO_TAG = LocationCellFactory.class.getSimpleName();
+    private static final String IMAGE_CACHING_TAG = LocationCellFactory.class.getSimpleName();
     public static final String MIME_TYPE = "location/coordinate";
     public static final String KEY_LATITUDE = "lat";
     public static final String KEY_LONGITUDE = "lon";
@@ -38,20 +38,19 @@ public class LocationCellFactory extends
     private static final double GOLDEN_RATIO = (1.0 + Math.sqrt(5.0)) / 2.0;
     private static final int CACHE_SIZE_BYTES = 256 * 1024;
 
-    private final Picasso mPicasso;
-    private Transformation mTransform;
+    private final ImageCacheWrapper mImageCacheWrapper;
 
-    public LocationCellFactory(Picasso mPicasso) {
+    public LocationCellFactory(ImageCacheWrapper imageCacheWrapper) {
         super(CACHE_SIZE_BYTES);
-        this.mPicasso = mPicasso;
+        this.mImageCacheWrapper = imageCacheWrapper;
     }
 
     /**
-     * @deprecated Use {@link #LocationCellFactory(Picasso)} instead
+     * @deprecated Use {@link #LocationCellFactory(ImageCacheWrapper)} instead
      */
     @Deprecated
-    public LocationCellFactory(Context context, Picasso picasso) {
-        this(picasso);
+    public LocationCellFactory(Context context, ImageCacheWrapper imageCacheWrapper) {
+        this(imageCacheWrapper);
     }
 
     public boolean isType(Message message) {
@@ -75,7 +74,15 @@ public class LocationCellFactory extends
 
     @Override
     public CellHolder createCellHolder(ViewGroup cellView, boolean isMe, LayoutInflater layoutInflater) {
-        return new CellHolder(layoutInflater.inflate(R.layout.ui_message_item_cell_image, cellView, true));
+
+        ImageWrapper imageWrapper = new ImageWrapper.Builder()
+                .setTag(IMAGE_CACHING_TAG)
+                .setShouldCenterImage(false)
+                .setShouldScaleDownTo(false)
+                .setShouldTransformIntoRound(true)
+                .build();
+
+        return new CellHolder(UiMessageItemCellImageBinding.inflate(layoutInflater, cellView, true), imageWrapper);
     }
 
     @Override
@@ -108,19 +115,17 @@ public class LocationCellFactory extends
         params.width = cellDims[0];
         params.height = cellDims[1];
         cellHolder.mProgressBar.show();
-        mPicasso.load("https://maps.googleapis.com/maps/api/staticmap?zoom=16&maptype=roadmap&scale=2&center=" + location.mLatitude + "," + location.mLongitude + "&markers=color:red%7C" + location.mLatitude + "," + location.mLongitude + "&size=" + mapWidth + "x" + mapHeight)
-                .tag(PICASSO_TAG).placeholder(PLACEHOLDER).resize(cellDims[0], cellDims[1])
-                .transform(getTransform(cellHolder.mImageView.getContext())).into(cellHolder.mImageView, new Callback() {
-            @Override
-            public void onSuccess() {
-                cellHolder.mProgressBar.hide();
-            }
 
-            @Override
-            public void onError() {
-                cellHolder.mProgressBar.hide();
-            }
-        });
+        String url = "https://maps.googleapis.com/maps/api/staticmap?zoom=16&maptype=roadmap&scale=2&center=" + location.mLatitude + "," + location.mLongitude + "&markers=color:red%7C" + location.mLatitude + "," + location.mLongitude + "&size=" + mapWidth + "x" + mapHeight;
+        ImageWrapper imageWrapper = cellHolder.mImageWrapper;
+        imageWrapper.setUri(Uri.parse(url));
+        imageWrapper.setPlaceholder(PLACEHOLDER);
+        imageWrapper.setTargetView(cellHolder.mImageView);
+        imageWrapper.setResizeWidthTo(cellDims[0]);
+        imageWrapper.setResizeHeightTo(cellDims[1]);
+        imageWrapper.setRotateAngleTo(0);
+        imageWrapper.setProgressBar(cellHolder.mProgressBar);
+        mImageCacheWrapper.loadImage(imageWrapper);
     }
 
     @Override
@@ -135,26 +140,13 @@ public class LocationCellFactory extends
     public void onScrollStateChanged(int newState) {
         switch (newState) {
             case RecyclerView.SCROLL_STATE_DRAGGING:
-                mPicasso.pauseTag(PICASSO_TAG);
+                mImageCacheWrapper.pauseTag(IMAGE_CACHING_TAG);
                 break;
             case RecyclerView.SCROLL_STATE_IDLE:
             case RecyclerView.SCROLL_STATE_SETTLING:
-                mPicasso.resumeTag(PICASSO_TAG);
+                mImageCacheWrapper.resumeTag(IMAGE_CACHING_TAG);
                 break;
         }
-    }
-
-    //==============================================================================================
-    // private methods
-    //==============================================================================================
-
-    private Transformation getTransform(Context context) {
-        if (mTransform == null) {
-            float radius = context.getResources().getDimension(com.layer.ui.R.dimen.layer_ui_message_item_cell_radius);
-            mTransform = new RoundedTransform(radius);
-        }
-
-        return mTransform;
     }
 
     static class Location implements CellFactory.ParsedContent {
@@ -171,10 +163,14 @@ public class LocationCellFactory extends
     static class CellHolder extends CellFactory.CellHolder {
         ImageView mImageView;
         ContentLoadingProgressBar mProgressBar;
+        private ImageWrapper mImageWrapper;
 
-        public CellHolder(View view) {
-            mImageView = (ImageView) view.findViewById(R.id.cell_image);
-            mProgressBar = (ContentLoadingProgressBar) view.findViewById(R.id.cell_progress);
+        public CellHolder(ViewDataBinding viewDataBinding, ImageWrapper imageWrapper) {
+            if (viewDataBinding instanceof  UiMessageItemCellImageBinding) {
+                mImageView = ((UiMessageItemCellImageBinding) viewDataBinding).cellImage;
+                mProgressBar = ((UiMessageItemCellImageBinding) viewDataBinding).cellProgress;
+            }
+            mImageWrapper = imageWrapper;
         }
     }
 }

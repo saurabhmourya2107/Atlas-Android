@@ -27,7 +27,8 @@ import android.view.View;
 import com.layer.ui.adapters.MessagesAdapter;
 import com.layer.ui.messagetypes.CellFactory;
 import com.layer.ui.messagetypes.MessageStyle;
-import com.layer.ui.util.LayerDateFormatter;
+import com.layer.ui.recyclerview.ItemsRecyclerView;
+import com.layer.ui.util.DateFormatter;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
 import com.layer.ui.util.itemanimators.NoChangeAnimator;
 import com.layer.ui.util.views.SwipeableItem;
@@ -38,7 +39,7 @@ import com.layer.sdk.query.Predicate;
 import com.layer.sdk.query.Query;
 import com.layer.sdk.query.SortDescriptor;
 
-public class MessagesRecyclerView extends RecyclerView {
+public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
     private MessagesAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     private ItemTouchHelper mSwipeItemTouchHelper;
@@ -60,13 +61,13 @@ public class MessagesRecyclerView extends RecyclerView {
     }
 
     public MessagesRecyclerView init(LayerClient layerClient, ImageCacheWrapper imageCacheWrapper,
-            LayerDateFormatter layerDateFormatter) {
+            DateFormatter dateFormatter) {
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mLayoutManager.setStackFromEnd(true);
         setLayoutManager(mLayoutManager);
 
         // Create an adapter that auto-scrolls if we're already at the bottom
-        mAdapter = new MessagesAdapter(getContext(), layerClient, imageCacheWrapper, layerDateFormatter)
+        mAdapter = new MessagesAdapter(getContext(), layerClient, imageCacheWrapper, dateFormatter)
                 .setRecyclerView(this)
                 .setOnMessageAppendListener(new MessagesAdapter.OnMessageAppendListener() {
                     @Override
@@ -96,30 +97,6 @@ public class MessagesRecyclerView extends RecyclerView {
     @Override
     public void setAdapter(Adapter adapter) {
         throw new RuntimeException("AtlasMessagesRecyclerView sets its own Adapter");
-    }
-
-    /**
-     * Performs cleanup when the Activity/Fragment using the adapter is destroyed.
-     */
-    public void onDestroy() {
-        if (mAdapter != null) {
-            mAdapter.onDestroy();
-        }
-    }
-
-    /**
-     * Automatically refresh on resume
-     */
-    @Override
-    protected void onVisibilityChanged(View changedView, int visibility) {
-        super.onVisibilityChanged(changedView, visibility);
-        if (visibility != View.VISIBLE) return;
-        refresh();
-    }
-
-    public MessagesRecyclerView refresh() {
-        if (mAdapter != null) mAdapter.refresh();
-        return this;
     }
 
     /**

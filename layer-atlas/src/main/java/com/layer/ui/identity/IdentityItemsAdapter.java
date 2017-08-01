@@ -8,7 +8,7 @@ import com.layer.sdk.messaging.Identity;
 import com.layer.ui.adapters.ItemRecyclerViewAdapter;
 import com.layer.ui.databinding.UiFourPartItemBinding;
 import com.layer.ui.style.FourPartItemStyle;
-import com.layer.ui.util.LayerDateFormatter;
+import com.layer.ui.util.DateFormatter;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
 
 import com.layer.ui.fourpartitem.FourPartItemViewHolder;
@@ -19,15 +19,15 @@ public class IdentityItemsAdapter extends ItemRecyclerViewAdapter<Identity, Iden
     protected static final String TAG = "IdentityItemsAdapter";
 
     protected IdentityFormatter mIdentityFormatter;
-    protected LayerDateFormatter mLayerDateFormatter;
+    protected DateFormatter mLayerDateFormatter;
     protected ImageCacheWrapper mImageCacheWrapper;
 
     public IdentityItemsAdapter(Context context, LayerClient layerClient,
                                 ImageCacheWrapper imageCacheWrapper, IdentityFormatter identityFormatter,
-                                LayerDateFormatter layerDateFormatter) {
+                                DateFormatter dateFormatter) {
         super(context, layerClient, TAG, false);
         mIdentityFormatter = identityFormatter;
-        mLayerDateFormatter = layerDateFormatter;
+        mLayerDateFormatter = dateFormatter;
         mImageCacheWrapper = imageCacheWrapper;
     }
 

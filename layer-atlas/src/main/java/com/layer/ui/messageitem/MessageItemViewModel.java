@@ -1,15 +1,17 @@
 package com.layer.ui.messageitem;
 
-import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.view.View;
 
 import com.layer.sdk.messaging.Identity;
+import com.layer.sdk.messaging.Message;
+import com.layer.ui.recyclerview.OnItemClickListener;
+import com.layer.ui.viewmodel.ItemViewModel;
 
 import java.util.Collections;
 import java.util.Set;
 
-public class MessageItemViewModel extends BaseObservable {
+public class MessageItemViewModel extends ItemViewModel<Message> {
 
     private boolean mIsOneOnOne;
     private boolean mShouldShowAvatar;
@@ -24,23 +26,34 @@ public class MessageItemViewModel extends BaseObservable {
     private String mRecipientStatus;
     private String mGroupTime;
     private boolean mRecipientStatusVisible;
+    private boolean mIsMyCellType;
+
+    public MessageItemViewModel(
+            OnItemClickListener<Message> itemClickListener) {
+        super(itemClickListener);
+    }
+
 
     public boolean isClusterSpaceVisible() {
         return mIsClusterSpaceVisible;
     }
 
-    public int isDisplayAvatar() {
-        if (isOneOnOne()) {
-            if (isShouldShowAvatar()) {
-                return (View.VISIBLE);
-            } else {
-                return (View.GONE);
-            }
-        } else if (mShouldClusterBeVisible) {
-            return (View.VISIBLE);
+    public int isAvatarDisplayed() {
+        if (mIsMyCellType) {
+            return View.GONE;
         }
 
-        return (View.INVISIBLE);
+        if (isOneOnOne()) {
+            if (isShouldShowAvatar()) {
+                return View.VISIBLE;
+            } else {
+                return View.GONE;
+            }
+        } else if (mShouldClusterBeVisible) {
+            return View.VISIBLE;
+        }
+
+        return View.INVISIBLE;
     }
 
     public void setShouldShowAvatar(
@@ -147,5 +160,14 @@ public class MessageItemViewModel extends BaseObservable {
 
     public void setRecipientStatusVisible(boolean recipientStatusVisible) {
         mRecipientStatusVisible = recipientStatusVisible;
+    }
+
+    public void setMyCellType(boolean isMyCellType) {
+        mIsMyCellType = isMyCellType;
+    }
+
+    @Bindable
+    public boolean isMyCellType() {
+        return mIsMyCellType;
     }
 }

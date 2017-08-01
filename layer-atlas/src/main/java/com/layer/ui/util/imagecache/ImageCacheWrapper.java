@@ -23,6 +23,12 @@ public interface ImageCacheWrapper {
      */
     void cancelBitmap(BitmapWrapper bitmapWrapper);
 
+    void pauseTag(String picassoTag);
+
+    void resumeTag(String picassoTag);
+
+    void loadImage(ImageWrapper imageWrapper);
+
     /**
      * Callback on the ViewModel when the Bitmap is loaded from the ImageCache Library
      * @see AvatarViewModelImpl#fetchBitmap(BitmapWrapper)

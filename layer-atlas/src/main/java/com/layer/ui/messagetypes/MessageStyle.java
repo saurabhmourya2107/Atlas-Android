@@ -3,7 +3,9 @@ package com.layer.ui.messagetypes;
 import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 
-public class MessageStyle {
+import com.layer.ui.style.ItemStyle;
+
+public class MessageStyle extends ItemStyle {
     private int mMyBubbleColor;
     private int mMyTextColor;
     private int mMyTextStyle;

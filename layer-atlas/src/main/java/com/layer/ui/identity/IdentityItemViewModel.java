@@ -1,24 +1,23 @@
 package com.layer.ui.identity;
 
 import com.layer.sdk.messaging.Identity;
+import com.layer.ui.fourpartitem.FourPartItemViewModel;
 import com.layer.ui.recyclerview.OnItemClickListener;
-import com.layer.ui.util.LayerDateFormatter;
+import com.layer.ui.util.DateFormatter;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import com.layer.ui.fourpartitem.FourPartItemViewModel;
-
 public class IdentityItemViewModel extends FourPartItemViewModel<Identity> {
 
     protected IdentityFormatter mIdentityFormatter;
-    protected LayerDateFormatter mLayerDateFormatter;
+    protected DateFormatter mDateFormatter;
 
     public IdentityItemViewModel(OnItemClickListener<Identity> onItemClickListener,
-                                 IdentityFormatter identityFormatter, LayerDateFormatter layerDateFormatter) {
+                                 IdentityFormatter identityFormatter, DateFormatter dateFormatter) {
         super(onItemClickListener);
         mIdentityFormatter = identityFormatter;
-        mLayerDateFormatter = layerDateFormatter;
+        mDateFormatter = dateFormatter;
     }
 
     @Override
@@ -39,7 +38,7 @@ public class IdentityItemViewModel extends FourPartItemViewModel<Identity> {
 
     @Override
     public String getAccessoryText() {
-        return mLayerDateFormatter.formatTimeDay(getItem().getLastSeenAt());
+        return mDateFormatter.formatTimeDay(getItem().getLastSeenAt());
     }
 
     @Override

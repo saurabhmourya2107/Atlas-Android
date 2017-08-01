@@ -15,7 +15,7 @@ import com.layer.ui.identity.IdentityFormatterImpl;
 import com.layer.ui.identity.IdentityItemViewModel;
 import com.layer.ui.mock.MockIdentity;
 import com.layer.ui.style.FourPartItemStyle;
-import com.layer.ui.util.LayerDateFormatterImpl;
+import com.layer.ui.util.DateFormatterImpl;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
 import com.layer.ui.util.imagecache.PicassoImageCacheWrapper;
 import com.squareup.picasso.Picasso;
@@ -33,7 +33,7 @@ public class IdentityItemTestActivity extends Activity {
         TestActivityFourPartItemBinding binding = DataBindingUtil.setContentView(this, R.layout.test_activity_four_part_item);
         FourPartItemStyle style = new FourPartItemStyle(this, null, 0);
 
-        IdentityItemViewModel viewModel = new IdentityItemViewModel(null, identityFormatter, new LayerDateFormatterImpl(getApplicationContext()));
+        IdentityItemViewModel viewModel = new IdentityItemViewModel(null, identityFormatter, new DateFormatterImpl(getApplicationContext()));
         viewModel.setItem(identity);
 
         AvatarViewModel avatarViewModel = new AvatarViewModelImpl(imageCacheWrapper);

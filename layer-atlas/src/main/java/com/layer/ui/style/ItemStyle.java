@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 public abstract class ItemStyle {
+
+    public ItemStyle() {}
     /**
      * Empty marker class to ensure type safety
      */

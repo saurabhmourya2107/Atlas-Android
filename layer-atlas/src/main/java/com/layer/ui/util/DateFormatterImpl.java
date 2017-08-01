@@ -8,13 +8,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class LayerDateFormatterImpl implements LayerDateFormatter {
+public class DateFormatterImpl implements DateFormatter {
     private final int TIME_HOURS_24 = 24 * 60 * 60 * 1000;
     private final SimpleDateFormat DAY_OF_WEEK = new SimpleDateFormat("EEE, LLL dd",
             Locale.getDefault());
     private Context mContext;
 
-    public LayerDateFormatterImpl(Context context) {
+    public DateFormatterImpl(Context context) {
         mContext = context;
     }
 

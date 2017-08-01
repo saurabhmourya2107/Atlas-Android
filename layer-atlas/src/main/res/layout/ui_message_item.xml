@@ -14,7 +14,8 @@
      limitations under the License.    
 -->
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -93,15 +94,49 @@
                 android:layout_height="@dimen/layer_ui_message_cluster_space_gap"
                 android:visibility="@{viewModel.clusterSpaceVisible ? View.VISIBLE : View.GONE}" />
 
+            <TextView
+                android:id="@+id/sender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/layer_ui_message_item_sender_margin_bottom"
+                android:layout_marginLeft="@dimen/layer_ui_message_item_sender_margin_left"
+                android:text="@{viewModel.sender}"
+                android:textColor="@color/layer_ui_text_gray"
+                android:textSize="@dimen/layer_ui_text_size_message_item_metadata"
+                android:visibility="@{viewModel.displayName ? View.VISIBLE : View.GONE}" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="1">
 
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginRight="@dimen/layer_ui_padding_narrow"
+                    android:visibility="@{viewModel.avatarDisplayed}">
+
+                    <com.layer.ui.avatar.AvatarView
+                        android:id="@+id/avatar"
+                        android:layout_width="@dimen/layer_ui_message_avatar_item_single"
+                        android:layout_height="@dimen/layer_ui_message_avatar_item_single"
+                        app:participants="@{viewModel.participants}" />
+
+
+                    <com.layer.ui.presence.PresenceView
+                        android:id="@+id/presence"
+                        android:layout_width="@dimen/layer_ui_message_avatar_item_single"
+                        android:layout_height="@dimen/layer_ui_message_avatar_item_single"
+                        android:layout_gravity="bottom|right" />
+
+                </FrameLayout>
+
                 <android.widget.Space
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:visibility="@{viewModel.myCellType ? View.VISIBLE : View.GONE}"
                     android:layout_weight="1" />
 
                 <FrameLayout

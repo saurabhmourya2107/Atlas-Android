@@ -8,7 +8,7 @@ import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Identity;
 import com.layer.sdk.query.Query;
 import com.layer.ui.recyclerview.OnItemClickListener;
-import com.layer.ui.util.LayerDateFormatter;
+import com.layer.ui.util.DateFormatter;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
 
 import java.util.Collection;
@@ -20,10 +20,10 @@ public class IdentityItemsListViewModel extends BaseObservable {
 
     public IdentityItemsListViewModel(Context context, LayerClient layerClient,
                                       ImageCacheWrapper imageCacheWrapper,
-                                      LayerDateFormatter layerDateFormatter,
+                                      DateFormatter dateFormatter,
                                       IdentityFormatter identityFormatter) {
         mItemsAdapter = new IdentityItemsAdapter(context, layerClient, imageCacheWrapper,
-                identityFormatter, layerDateFormatter);
+                identityFormatter, dateFormatter);
     }
 
     public void setIdentities(Set<Identity> identities) {

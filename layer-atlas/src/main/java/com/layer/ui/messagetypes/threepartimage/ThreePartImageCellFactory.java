@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.ViewDataBinding;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
@@ -16,19 +17,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.layer.ui.R;
-import com.layer.ui.messagetypes.CellFactory;
-import com.layer.ui.util.Log;
-import com.layer.ui.util.Util;
-import com.layer.ui.util.imagepopup.ImagePopupActivity;
-import com.layer.ui.util.imagecache.transformations.RoundedTransform;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Message;
 import com.layer.sdk.messaging.MessagePart;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
-import com.squareup.picasso.Transformation;
+import com.layer.ui.R;
+import com.layer.ui.databinding.UiMessageItemCellImageBinding;
+import com.layer.ui.messagetypes.CellFactory;
+import com.layer.ui.util.Log;
+import com.layer.ui.util.Util;
+import com.layer.ui.util.imagecache.ImageCacheWrapper;
+import com.layer.ui.util.imagecache.ImageWrapper;
+import com.layer.ui.util.imagepopup.ImagePopupActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,29 +41,27 @@ import java.util.List;
  */
 public class ThreePartImageCellFactory extends
         CellFactory<ThreePartImageCellFactory.CellHolder, ThreePartImageCellFactory.Info> implements View.OnClickListener {
-    private static final String PICASSO_TAG = ThreePartImageCellFactory.class.getSimpleName();
+    private static final String IMAGE_CACHING_TAG = ThreePartImageCellFactory.class.getSimpleName();
 
     private static final int PLACEHOLDER = R.drawable.ui_message_item_cell_placeholder;
     private static final int CACHE_SIZE_BYTES = 256 * 1024;
 
     private final LayerClient mLayerClient;
-    private final Picasso mPicasso;
-    private Transformation mTransform;
+    private final ImageCacheWrapper mImageCacheWrapper;
 
-    public ThreePartImageCellFactory(LayerClient mLayerClient, Picasso mPicasso) {
+    public ThreePartImageCellFactory(LayerClient mLayerClient, ImageCacheWrapper imageCacheWrapper) {
         super(CACHE_SIZE_BYTES);
         this.mLayerClient = mLayerClient;
-        this.mPicasso = mPicasso;
+        this.mImageCacheWrapper = imageCacheWrapper;
     }
 
     /**
-     * @deprecated Use {@link #ThreePartImageCellFactory(LayerClient, Picasso)} instead
+     * @deprecated Use {@link #ThreePartImageCellFactory(LayerClient, ImageCacheWrapper)} instead
      */
     @Deprecated
-    public ThreePartImageCellFactory(Activity activity, LayerClient layerClient, Picasso picasso) {
-        this(layerClient, picasso);
+    public ThreePartImageCellFactory(Activity activity, LayerClient layerClient, ImageCacheWrapper imageCacheWrapper) {
+        this(layerClient, imageCacheWrapper);
         float radius = activity.getResources().getDimension(com.layer.ui.R.dimen.layer_ui_message_item_cell_radius);
-        mTransform = new RoundedTransform(radius);
     }
 
     @Override
@@ -74,7 +71,13 @@ public class ThreePartImageCellFactory extends
 
     @Override
     public CellHolder createCellHolder(ViewGroup cellView, boolean isMe, LayoutInflater layoutInflater) {
-        return new CellHolder(layoutInflater.inflate(R.layout.ui_message_item_cell_image, cellView, true));
+        ImageWrapper imageWrapper = new ImageWrapper.Builder()
+                .setTag(IMAGE_CACHING_TAG)
+                .setShouldCenterImage(false)
+                .setShouldScaleDownTo(false)
+                .setShouldTransformIntoRound(true)
+                .build();
+        return new CellHolder(UiMessageItemCellImageBinding.inflate(layoutInflater, cellView, true), imageWrapper);
     }
 
     @Override
@@ -94,33 +97,42 @@ public class ThreePartImageCellFactory extends
         params.width = cellDims[0];
         params.height = cellDims[1];
         cellHolder.mProgressBar.show();
-        RequestCreator creator = mPicasso.load(preview.getId()).tag(PICASSO_TAG).placeholder(PLACEHOLDER);
+
+        int width, height, rotate;
+
+
         switch (info.orientation) {
             case ThreePartImageUtils.ORIENTATION_0:
-                creator.resize(cellDims[0], cellDims[1]);
+                width = cellDims[0];
+                height = cellDims[1];
+                rotate = 0;
                 break;
             case ThreePartImageUtils.ORIENTATION_90:
-                creator.resize(cellDims[1], cellDims[0]).rotate(-90);
+                width = cellDims[1];
+                height = cellDims[0];
+                rotate = -90;
                 break;
             case ThreePartImageUtils.ORIENTATION_180:
-                creator.resize(cellDims[0], cellDims[1]).rotate(180);
+                width = cellDims[0];
+                height = cellDims[1];
+                rotate = 180;
                 break;
             default:
-                creator.resize(cellDims[1], cellDims[0]).rotate(90);
+                width = cellDims[1];
+                height = cellDims[0];
+                rotate = 90;
                 break;
         }
 
-        creator.transform(getTransform(cellHolder.mImageView.getContext())).into(cellHolder.mImageView, new Callback() {
-            @Override
-            public void onSuccess() {
-                cellHolder.mProgressBar.hide();
-            }
-
-            @Override
-            public void onError() {
-                cellHolder.mProgressBar.hide();
-            }
-        });
+        ImageWrapper imageWrapper = cellHolder.mImageWrapper;
+        imageWrapper.setUri(preview.getId());
+        imageWrapper.setPlaceholder(PLACEHOLDER);
+        imageWrapper.setTargetView(cellHolder.mImageView);
+        imageWrapper.setResizeWidthTo(width);
+        imageWrapper.setResizeHeightTo(height);
+        imageWrapper.setRotateAngleTo(rotate);
+        imageWrapper.setProgressBar(cellHolder.mProgressBar);
+        mImageCacheWrapper.loadImage(imageWrapper);
 
         cellHolder.mImageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -167,26 +179,13 @@ public class ThreePartImageCellFactory extends
     public void onScrollStateChanged(int newState) {
         switch (newState) {
             case RecyclerView.SCROLL_STATE_DRAGGING:
-                mPicasso.pauseTag(PICASSO_TAG);
+                mImageCacheWrapper.pauseTag(IMAGE_CACHING_TAG);
                 break;
             case RecyclerView.SCROLL_STATE_IDLE:
             case RecyclerView.SCROLL_STATE_SETTLING:
-                mPicasso.resumeTag(PICASSO_TAG);
+                mImageCacheWrapper.resumeTag(IMAGE_CACHING_TAG);
                 break;
         }
-    }
-
-    //==============================================================================================
-    // private methods
-    //==============================================================================================
-
-    private Transformation getTransform(Context context) {
-        if (mTransform == null) {
-            float radius = context.getResources().getDimension(com.layer.ui.R.dimen.layer_ui_message_item_cell_radius);
-            mTransform = new RoundedTransform(radius);
-        }
-
-        return mTransform;
     }
 
     //==============================================================================================
@@ -275,12 +274,17 @@ public class ThreePartImageCellFactory extends
     }
 
     static class CellHolder extends CellFactory.CellHolder {
-        ImageView mImageView;
-        ContentLoadingProgressBar mProgressBar;
+        private ImageView mImageView;
+        private ContentLoadingProgressBar mProgressBar;
+        private ImageWrapper mImageWrapper;
 
-        public CellHolder(View view) {
-            mImageView = (ImageView) view.findViewById(R.id.cell_image);
-            mProgressBar = (ContentLoadingProgressBar) view.findViewById(R.id.cell_progress);
+        public CellHolder(ViewDataBinding viewDataBinding, ImageWrapper imageWrapper) {
+            if (viewDataBinding instanceof UiMessageItemCellImageBinding) {
+                mImageView = ((UiMessageItemCellImageBinding) viewDataBinding).cellImage;
+                mProgressBar = ((UiMessageItemCellImageBinding) viewDataBinding).cellProgress;
+            }
+
+            mImageWrapper = imageWrapper;
         }
     }
 }
