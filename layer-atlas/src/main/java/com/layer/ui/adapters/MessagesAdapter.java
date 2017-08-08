@@ -66,7 +66,7 @@ import java.util.Set;
  * @see CellFactory
  */
 public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageItemViewModel,
-        ViewDataBinding, MessageStyle, MessagesAdapter.ViewHolder> {
+        ViewDataBinding, MessageStyle, ItemViewHolder<Message, MessageItemViewModel, ViewDataBinding, MessageStyle>> {
 
     private static final String TAG = MessagesAdapter.class.getSimpleName();
     private final static int VIEW_TYPE_FOOTER = 0;
@@ -291,11 +291,12 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         if (viewType == VIEW_TYPE_FOOTER) {
             UiMessageItemFooterBinding uiMessageItemFooterBinding =
                     UiMessageItemFooterBinding.inflate(mLayoutInflater, parent, false);
-            return new ViewHolder(uiMessageItemFooterBinding, null);
+            return new MessageItemFooterViewHolder(uiMessageItemFooterBinding);
         }
 
         CellType cellType = mCellTypesByViewType.get(viewType);
@@ -312,10 +313,12 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+    public void onBindViewHolder(
+            ItemViewHolder<Message, MessageItemViewModel, ViewDataBinding, MessageStyle> holder,
+            int position, List<Object> payloads) {
         if (mFooterView != null && position == mFooterPosition) {
             // Footer
-            bindFooter(holder);
+            bindFooter((MessageItemFooterViewHolder) holder);
         } else {
             // Cell
             bindCellViewHolder((CellViewHolder) holder, position);
@@ -323,7 +326,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
         super.onBindViewHolder(holder, position, payloads);
     }
 
-    public void bindFooter(ViewHolder viewHolder) {
+    public void bindFooter(MessageItemFooterViewHolder viewHolder) {
         viewHolder.mRoot.removeAllViews();
         if (mFooterView.getParent() != null) {
             ((ViewGroup) mFooterView.getParent()).removeView(mFooterView);
@@ -688,35 +691,31 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
         void onMessageAppend(MessagesAdapter adapter, Message message);
     }
 
-    static class ViewHolder extends ItemViewHolder<Message, MessageItemViewModel, ViewDataBinding, MessageStyle> {
+    static class MessageItemFooterViewHolder extends ItemViewHolder<Message, MessageItemViewModel, ViewDataBinding, MessageStyle> {
 
-        // View cache
         protected ViewGroup mRoot;
-
-        public ViewHolder(ViewDataBinding viewDataBinding, MessageItemViewModel messageItemViewModel) {
-            super(viewDataBinding, messageItemViewModel);
-            if (viewDataBinding instanceof UiMessageItemBinding) {
-                mRoot = ((UiMessageItemBinding) viewDataBinding).swipeable;
-            } else {
-                mRoot = ((UiMessageItemFooterBinding) viewDataBinding).swipeable;
-            }
+        public MessageItemFooterViewHolder(UiMessageItemFooterBinding binding) {
+            super(binding, null);
+            mRoot = binding.swipeable;
         }
     }
-
-    static class CellViewHolder extends ViewHolder {
+    static class CellViewHolder extends ItemViewHolder<Message, MessageItemViewModel, ViewDataBinding, MessageStyle> {
 
         protected Message mMessage;
 
         // Cell
         protected CellFactory.CellHolder mCellHolder;
         protected CellFactory.CellHolderSpecs mCellHolderSpecs;
-        private DateFormat mTimeFormat;
-
+        protected DateFormat mTimeFormat;
+        protected UiMessageItemBinding mUiMessageItemBinding;
+        protected ViewGroup mRoot;
 
         public CellViewHolder(UiMessageItemBinding uiMessageItemBinding, MessageItemViewModel messageItemViewModel,
                 ImageCacheWrapper imageCachWrapper) {
 
             super(uiMessageItemBinding, messageItemViewModel);
+            mRoot = uiMessageItemBinding.swipeable;
+            mUiMessageItemBinding = uiMessageItemBinding;
             mTimeFormat = android.text.format.DateFormat.getTimeFormat(uiMessageItemBinding.getRoot().getContext());
             uiMessageItemBinding.avatar.init(new AvatarViewModelImpl(imageCachWrapper), new IdentityFormatterImpl());
         }
@@ -758,15 +757,15 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
             messageItemViewModel.setMyCellType(isCellTypeMe);
             messageItemViewModel.notifyChange();
 
-            ((UiMessageItemBinding) mBinding).setViewModel(messageItemViewModel);
+           mUiMessageItemBinding.setViewModel(messageItemViewModel);
         }
 
         public ViewGroup getCell() {
-            return ((UiMessageItemBinding) getBinding()).cell;
+            return mUiMessageItemBinding.cell;
         }
 
         public AvatarView getAvatarView() {
-            return ((UiMessageItemBinding) getBinding()).avatar;
+            return mUiMessageItemBinding.avatar;
         }
     }
 
