@@ -1,14 +1,11 @@
 package com.layer.ui.util.imagecache;
 
 import android.net.Uri;
-import android.support.v4.widget.ContentLoadingProgressBar;
-import android.widget.ImageView;
-
-import java.lang.ref.WeakReference;
 
 
-public class ImageRequestParameters implements ImageCacheWrapper.Callback {
+public class ImageRequestParameters {
 
+    private final ImageCacheWrapper.Callback mCallBack;
     private Uri mUri;
     private String mTag;
     private int mPlaceholder;
@@ -16,13 +13,15 @@ public class ImageRequestParameters implements ImageCacheWrapper.Callback {
     private int mResizeWidthTo;
     private int mResizeHeightTo;
     private boolean mShouldTransformIntoRound;
-    private WeakReference<ImageView> mTargetView;
     private float mRotateAngleTo;
     private boolean mShouldScaleDownTo;
-    private WeakReference<ContentLoadingProgressBar> mProgressBar;
-
 
     public ImageRequestParameters(Builder builder) {
+        mUri = builder.mUri;
+        mPlaceholder = builder.mPlaceholder;
+        mResizeWidthTo = builder.mResizeWidthTo;
+        mResizeHeightTo = builder.mResizeHeightTo;
+        mCallBack = builder.mCallBack;
         mTag = builder.mTag;
         mShouldCenterImage = builder.mShouldCenterImage;
         mShouldTransformIntoRound = builder.mShouldTransformIntoRound;
@@ -58,12 +57,8 @@ public class ImageRequestParameters implements ImageCacheWrapper.Callback {
         return mShouldTransformIntoRound;
     }
 
-    public WeakReference<ImageView> getTargetView() {
-        return mTargetView;
-    }
-
     public ImageCacheWrapper.Callback getCallback() {
-        return this;
+        return mCallBack;
     }
 
     public float getRotateAngleTo() {
@@ -74,57 +69,25 @@ public class ImageRequestParameters implements ImageCacheWrapper.Callback {
         return mShouldScaleDownTo;
     }
 
-    public void setUri(Uri uri) {
-        mUri = uri;
-    }
-
-    public void setPlaceholder(int placeholder) {
-        mPlaceholder = placeholder;
-    }
-
-    public void setResizeWidthTo(int resizeWidthTo) {
-        mResizeWidthTo = resizeWidthTo;
-    }
-
-    public void setResizeHeightTo(int resizeHeightTo) {
-        mResizeHeightTo = resizeHeightTo;
-    }
-
-    public void setTargetView(ImageView targetView) {
-        mTargetView = new WeakReference<>(targetView);
-    }
-
-    @Override
-    public void onSuccess() {
-        hideProgressBar();
-    }
-
-    @Override
-    public void onFailure() {
-        hideProgressBar();
-    }
-
-    private void hideProgressBar() {
-        ContentLoadingProgressBar contentLoadingProgressBar = mProgressBar.get();
-        if (contentLoadingProgressBar != null) {
-            contentLoadingProgressBar.hide();
-        }
-    }
-
-    public void setProgressBar(ContentLoadingProgressBar progressBar) {
-        mProgressBar = new WeakReference<>(progressBar);
-    }
-
-    public void setRotateAngleTo(float rotateAngleTo) {
-        mRotateAngleTo = rotateAngleTo;
-    }
-
     public static class Builder {
         private String mTag;
         private boolean mShouldCenterImage;
         private boolean mShouldTransformIntoRound;
         private float mRotateAngleTo;
         private boolean mShouldScaleDownTo;
+        private Uri mUri;
+        private int mPlaceholder;
+        private int mResizeWidthTo;
+        private int mResizeHeightTo;
+        private ImageCacheWrapper.Callback mCallBack;
+
+        public Builder(Uri uri, int placeholder, int resizeWidthTo, int resizeHeightTo, ImageCacheWrapper.Callback callback) {
+            mUri = uri;
+            mPlaceholder = placeholder;
+            mResizeWidthTo = resizeWidthTo;
+            mResizeHeightTo = resizeHeightTo;
+            mCallBack = callback;
+        }
 
         public Builder setTag(String tag) {
             mTag = tag;

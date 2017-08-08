@@ -99,46 +99,46 @@ public class PicassoImageCacheWrapper implements ImageCacheWrapper {
     }
 
     @Override
-    public void loadImage(final ImageWrapper imageWrapper) {
-        RequestCreator requestCreator = mPicasso.load(imageWrapper.getUri())
-                .tag(imageWrapper.getTag())
-                .placeholder(imageWrapper.getPlaceholder());
+    public void loadImage(final ImageRequestParameters imageRequestParameters,
+            ImageView imageView) {
+        RequestCreator requestCreator = mPicasso.load(imageRequestParameters.getUri())
+                .tag(imageRequestParameters.getTag())
+                .placeholder(imageRequestParameters.getPlaceholder());
 
-        if (imageWrapper.isShouldCenterImage()) {
+        if (imageRequestParameters.isShouldCenterImage()) {
             requestCreator = requestCreator.centerCrop();
         }
 
-        ImageView view = imageWrapper.getTargetView().get();
-        if (view != null) {
-            if (imageWrapper.getRotateAngleTo() == 0) {
-                requestCreator.resize(imageWrapper.getResizeWidthTo(), imageWrapper.getResizeHeightTo());
-            } else {
-                requestCreator.resize(imageWrapper.getResizeWidthTo(),
-                        imageWrapper.getResizeHeightTo()).rotate(imageWrapper.getRotateAngleTo());
-            }
-
-            if (imageWrapper.shouldScaleDownTo()) {
-                requestCreator.onlyScaleDown();
-            }
-
-            if (imageWrapper.shouldTransformIntoRound()) {
-                requestCreator.transform(getTransform(view.getContext()));
-            }
-
-            requestCreator.into(view, new com.squareup.picasso.Callback() {
-                @Override
-                public void onSuccess() {
-                    imageWrapper.getCallback().onSuccess();
-                }
-
-                @Override
-                public void onError() {
-                    imageWrapper.getCallback().onFailure();
-                }
-            });
+        if (imageRequestParameters.getRotateAngleTo() == 0) {
+            requestCreator.resize(imageRequestParameters.getResizeWidthTo(),
+                    imageRequestParameters.getResizeHeightTo());
+        } else {
+            requestCreator.resize(imageRequestParameters.getResizeWidthTo(),
+                    imageRequestParameters.getResizeHeightTo()).rotate(
+                    imageRequestParameters.getRotateAngleTo());
         }
 
+        if (imageRequestParameters.shouldScaleDownTo()) {
+            requestCreator.onlyScaleDown();
+        }
+
+        if (imageRequestParameters.shouldTransformIntoRound()) {
+            requestCreator.transform(getTransform(imageView.getContext()));
+        }
+
+        requestCreator.into(imageView, new com.squareup.picasso.Callback() {
+            @Override
+            public void onSuccess() {
+                imageRequestParameters.getCallback().onSuccess();
+            }
+
+            @Override
+            public void onError() {
+                imageRequestParameters.getCallback().onFailure();
+            }
+        });
     }
+
 
     //==============================================================================================
     // private methods

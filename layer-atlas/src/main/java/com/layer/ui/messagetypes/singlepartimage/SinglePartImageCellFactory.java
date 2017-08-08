@@ -21,7 +21,7 @@ import com.layer.ui.R;
 import com.layer.ui.databinding.UiMessageItemCellImageBinding;
 import com.layer.ui.messagetypes.CellFactory;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
-import com.layer.ui.util.imagecache.ImageWrapper;
+import com.layer.ui.util.imagecache.ImageRequestParameters;
 import com.layer.ui.util.imagepopup.ImagePopupActivity;
 
 /**
@@ -57,15 +57,7 @@ public class SinglePartImageCellFactory extends
 
     @Override
     public CellHolder createCellHolder(ViewGroup cellView, boolean isMe, LayoutInflater layoutInflater) {
-        ImageWrapper imageWrapper = new ImageWrapper.Builder()
-                .setRotateAngleTo(0)
-                .setTag(IMAGE_CACHING_TAG)
-                .setShouldCenterImage(true)
-                .setShouldScaleDownTo(true)
-                .setShouldTransformIntoRound(true)
-                .build();
-
-        return new CellHolder(UiMessageItemCellImageBinding.inflate(layoutInflater, cellView, true), imageWrapper);
+        return new CellHolder(UiMessageItemCellImageBinding.inflate(layoutInflater, cellView, true));
     }
 
     @Override
@@ -74,15 +66,29 @@ public class SinglePartImageCellFactory extends
         cellHolder.mImageView.setOnClickListener(this);
         cellHolder.mProgressBar.show();
 
-        ImageWrapper imageWrapper = cellHolder.mImageWrapper;
-        imageWrapper.setUri(index.mId);
-        imageWrapper.setPlaceholder(PLACEHOLDER);
-        imageWrapper.setTargetView(cellHolder.mImageView);
-        imageWrapper.setResizeWidthTo(specs.maxWidth);
-        imageWrapper.setResizeHeightTo(specs.maxHeight);
-        imageWrapper.setRotateAngleTo(0);
-        imageWrapper.setProgressBar(cellHolder.mProgressBar);
-        mImageCacheWrapper.loadImage(imageWrapper);    }
+        ImageCacheWrapper.Callback callback = new ImageCacheWrapper.Callback() {
+            @Override
+            public void onSuccess() {
+                cellHolder.mProgressBar.hide();
+            }
+
+            @Override
+            public void onFailure() {
+                cellHolder.mProgressBar.hide();
+            }
+        };
+
+        ImageRequestParameters imageRequestParameters = new ImageRequestParameters
+                .Builder(index.mId, PLACEHOLDER, specs.maxWidth, specs.maxHeight, callback)
+                .setRotateAngleTo(0)
+                .setTag(IMAGE_CACHING_TAG)
+                .setShouldCenterImage(true)
+                .setShouldScaleDownTo(true)
+                .setShouldTransformIntoRound(true)
+                .setRotateAngleTo(0)
+                .build();
+        mImageCacheWrapper.loadImage(imageRequestParameters, cellHolder.mImageView);
+    }
 
     @Override
     public void onClick(View v) {
@@ -145,15 +151,13 @@ public class SinglePartImageCellFactory extends
         ImageView mImageView;
         ContentLoadingProgressBar mProgressBar;
         ViewDataBinding mViewDataBinding;
-        ImageWrapper mImageWrapper;
 
-        public CellHolder(ViewDataBinding viewDataBinding, ImageWrapper imageWrapper) {
+        public CellHolder(ViewDataBinding viewDataBinding) {
             mViewDataBinding = viewDataBinding;
             if (viewDataBinding instanceof UiMessageItemCellImageBinding) {
                 mImageView = ((UiMessageItemCellImageBinding) viewDataBinding).cellImage;
                 mProgressBar = ((UiMessageItemCellImageBinding) viewDataBinding).cellProgress;
             }
-            mImageWrapper = imageWrapper;
         }
     }
 

@@ -1,8 +1,7 @@
 package com.layer.ui.util.imagecache;
 
 import android.graphics.Bitmap;
-
-import com.layer.ui.avatar.AvatarViewModelImpl;
+import android.widget.ImageView;
 
 public interface ImageCacheWrapper {
 
@@ -27,12 +26,10 @@ public interface ImageCacheWrapper {
 
     void resumeTag(String picassoTag);
 
-    void loadImage(ImageWrapper imageWrapper);
+    void loadImage(ImageRequestParameters imageRequestParameters, ImageView imageView);
 
     /**
-     * Callback on the ViewModel when the Bitmap is loaded from the ImageCache Library
-     * @see AvatarViewModelImpl#fetchBitmap(BitmapWrapper)
-     *
+     * Callback when the Bitmap or Image is loaded from the ImageCache Library
      */
     interface Callback {
         void onSuccess();

@@ -26,7 +26,7 @@ import com.layer.ui.messagetypes.CellFactory;
 import com.layer.ui.util.Log;
 import com.layer.ui.util.Util;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
-import com.layer.ui.util.imagecache.ImageWrapper;
+import com.layer.ui.util.imagecache.ImageRequestParameters;
 import com.layer.ui.util.imagepopup.ImagePopupActivity;
 
 import org.json.JSONException;
@@ -71,13 +71,8 @@ public class ThreePartImageCellFactory extends
 
     @Override
     public CellHolder createCellHolder(ViewGroup cellView, boolean isMe, LayoutInflater layoutInflater) {
-        ImageWrapper imageWrapper = new ImageWrapper.Builder()
-                .setTag(IMAGE_CACHING_TAG)
-                .setShouldCenterImage(false)
-                .setShouldScaleDownTo(false)
-                .setShouldTransformIntoRound(true)
-                .build();
-        return new CellHolder(UiMessageItemCellImageBinding.inflate(layoutInflater, cellView, true), imageWrapper);
+
+        return new CellHolder(UiMessageItemCellImageBinding.inflate(layoutInflater, cellView, true));
     }
 
     @Override
@@ -124,15 +119,27 @@ public class ThreePartImageCellFactory extends
                 break;
         }
 
-        ImageWrapper imageWrapper = cellHolder.mImageWrapper;
-        imageWrapper.setUri(preview.getId());
-        imageWrapper.setPlaceholder(PLACEHOLDER);
-        imageWrapper.setTargetView(cellHolder.mImageView);
-        imageWrapper.setResizeWidthTo(width);
-        imageWrapper.setResizeHeightTo(height);
-        imageWrapper.setRotateAngleTo(rotate);
-        imageWrapper.setProgressBar(cellHolder.mProgressBar);
-        mImageCacheWrapper.loadImage(imageWrapper);
+        ImageCacheWrapper.Callback callback = new ImageCacheWrapper.Callback() {
+            @Override
+            public void onSuccess() {
+                cellHolder.mProgressBar.hide();
+            }
+
+            @Override
+            public void onFailure() {
+                cellHolder.mProgressBar.hide();
+            }
+        };
+
+        ImageRequestParameters imageRequestParameters = new ImageRequestParameters
+                .Builder(preview.getId(), PLACEHOLDER, width, height, callback)
+                .setTag(IMAGE_CACHING_TAG)
+                .setRotateAngleTo(rotate)
+                .setShouldCenterImage(false)
+                .setShouldScaleDownTo(false)
+                .setShouldTransformIntoRound(true)
+                .build();
+        mImageCacheWrapper.loadImage(imageRequestParameters, cellHolder.mImageView);
 
         cellHolder.mImageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -276,15 +283,12 @@ public class ThreePartImageCellFactory extends
     static class CellHolder extends CellFactory.CellHolder {
         private ImageView mImageView;
         private ContentLoadingProgressBar mProgressBar;
-        private ImageWrapper mImageWrapper;
 
-        public CellHolder(ViewDataBinding viewDataBinding, ImageWrapper imageWrapper) {
+        public CellHolder(ViewDataBinding viewDataBinding) {
             if (viewDataBinding instanceof UiMessageItemCellImageBinding) {
                 mImageView = ((UiMessageItemCellImageBinding) viewDataBinding).cellImage;
                 mProgressBar = ((UiMessageItemCellImageBinding) viewDataBinding).cellProgress;
             }
-
-            mImageWrapper = imageWrapper;
         }
     }
 }

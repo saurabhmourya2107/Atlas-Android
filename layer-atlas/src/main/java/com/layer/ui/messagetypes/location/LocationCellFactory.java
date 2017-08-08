@@ -11,15 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.layer.sdk.LayerClient;
+import com.layer.sdk.messaging.Message;
 import com.layer.ui.R;
 import com.layer.ui.databinding.UiMessageItemCellImageBinding;
 import com.layer.ui.messagetypes.CellFactory;
 import com.layer.ui.util.Log;
 import com.layer.ui.util.Util;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
-import com.layer.sdk.LayerClient;
-import com.layer.sdk.messaging.Message;
-import com.layer.ui.util.imagecache.ImageWrapper;
+import com.layer.ui.util.imagecache.ImageRequestParameters;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,14 +75,7 @@ public class LocationCellFactory extends
     @Override
     public CellHolder createCellHolder(ViewGroup cellView, boolean isMe, LayoutInflater layoutInflater) {
 
-        ImageWrapper imageWrapper = new ImageWrapper.Builder()
-                .setTag(IMAGE_CACHING_TAG)
-                .setShouldCenterImage(false)
-                .setShouldScaleDownTo(false)
-                .setShouldTransformIntoRound(true)
-                .build();
-
-        return new CellHolder(UiMessageItemCellImageBinding.inflate(layoutInflater, cellView, true), imageWrapper);
+        return new CellHolder(UiMessageItemCellImageBinding.inflate(layoutInflater, cellView, true));
     }
 
     @Override
@@ -116,16 +109,29 @@ public class LocationCellFactory extends
         params.height = cellDims[1];
         cellHolder.mProgressBar.show();
 
+        ImageCacheWrapper.Callback callback = new ImageCacheWrapper.Callback() {
+            @Override
+            public void onSuccess() {
+                cellHolder.mProgressBar.hide();
+            }
+
+            @Override
+            public void onFailure() {
+                cellHolder.mProgressBar.hide();
+            }
+        };
+
         String url = "https://maps.googleapis.com/maps/api/staticmap?zoom=16&maptype=roadmap&scale=2&center=" + location.mLatitude + "," + location.mLongitude + "&markers=color:red%7C" + location.mLatitude + "," + location.mLongitude + "&size=" + mapWidth + "x" + mapHeight;
-        ImageWrapper imageWrapper = cellHolder.mImageWrapper;
-        imageWrapper.setUri(Uri.parse(url));
-        imageWrapper.setPlaceholder(PLACEHOLDER);
-        imageWrapper.setTargetView(cellHolder.mImageView);
-        imageWrapper.setResizeWidthTo(cellDims[0]);
-        imageWrapper.setResizeHeightTo(cellDims[1]);
-        imageWrapper.setRotateAngleTo(0);
-        imageWrapper.setProgressBar(cellHolder.mProgressBar);
-        mImageCacheWrapper.loadImage(imageWrapper);
+
+        ImageRequestParameters imageRequestParameters = new ImageRequestParameters
+                .Builder(Uri.parse(url), PLACEHOLDER, cellDims[0], cellDims[1], callback)
+                .setTag(IMAGE_CACHING_TAG)
+                .setShouldCenterImage(false)
+                .setShouldScaleDownTo(false)
+                .setShouldTransformIntoRound(true)
+                .setRotateAngleTo(0).build();
+
+        mImageCacheWrapper.loadImage(imageRequestParameters, cellHolder.mImageView);
     }
 
     @Override
@@ -163,14 +169,12 @@ public class LocationCellFactory extends
     static class CellHolder extends CellFactory.CellHolder {
         ImageView mImageView;
         ContentLoadingProgressBar mProgressBar;
-        private ImageWrapper mImageWrapper;
 
-        public CellHolder(ViewDataBinding viewDataBinding, ImageWrapper imageWrapper) {
+        public CellHolder(ViewDataBinding viewDataBinding) {
             if (viewDataBinding instanceof  UiMessageItemCellImageBinding) {
                 mImageView = ((UiMessageItemCellImageBinding) viewDataBinding).cellImage;
                 mProgressBar = ((UiMessageItemCellImageBinding) viewDataBinding).cellProgress;
             }
-            mImageWrapper = imageWrapper;
         }
     }
 }
