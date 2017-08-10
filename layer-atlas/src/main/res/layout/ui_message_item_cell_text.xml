@@ -2,8 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable
-            name="viewModel"
-            type="com.layer.ui.messagetypes.text.TextCellFactoryViewModel" />
+            name="messageStyle"
+            type="com.layer.ui.messagetypes.MessageStyle" />
     </data>
 
     <merge
@@ -16,9 +16,9 @@
             android:layout_height="wrap_content"
             android:autoLink="all"
             android:linksClickable="true"
-            android:textColorLink="@{viewModel.linkTextColor}"
-            android:textColor="@{viewModel.textColor}"
-            android:typeface="@{viewModel.typeFace}"
+            android:textColorLink="@{messageStyle.textColor}"
+            android:textColor="@{messageStyle.textColor}"
+            android:typeface="@{messageStyle.textTypeface}"
             android:textSize="@dimen/layer_ui_text_size_message_item"/>
 
 

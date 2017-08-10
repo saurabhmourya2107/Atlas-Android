@@ -45,13 +45,12 @@ public class TextCellFactory extends
         UiMessageItemCellTextBinding uiMessageItemCellTextBinding = UiMessageItemCellTextBinding
                 .inflate(layoutInflater, cellView, true);
 
-        TextCellFactoryViewModel textCellFactoryViewModel = new TextCellFactoryViewModel(mMessageStyle, isMe);
-        uiMessageItemCellTextBinding.setViewModel(textCellFactoryViewModel);
-
+        mMessageStyle.setIsMe(isMe);
+        uiMessageItemCellTextBinding.setMessageStyle(mMessageStyle);
         View v = uiMessageItemCellTextBinding.getRoot();
         v.setBackgroundResource(isMe ? R.drawable.ui_message_item_cell_me : R.drawable.ui_message_item_cell_them);
         ((GradientDrawable) v.getBackground()).setColor(isMe ? mMessageStyle.getMyBubbleColor() : mMessageStyle.getOtherBubbleColor());
-        return new CellHolder(uiMessageItemCellTextBinding.getRoot());
+        return new CellHolder(uiMessageItemCellTextBinding);
     }
 
     @Override
@@ -160,9 +159,9 @@ public class TextCellFactory extends
         TextView mTextView;
         ContentLoadingProgressBar mProgressBar;
 
-        public CellHolder(View view) {
-            mTextView = (TextView) view.findViewById(R.id.cell_text);
-            mProgressBar = (ContentLoadingProgressBar) view.findViewById(R.id.text_cell_progress);
+        public CellHolder(UiMessageItemCellTextBinding uiMessageItemCellTextBinding) {
+            mTextView = uiMessageItemCellTextBinding.cellText;
+            mProgressBar = uiMessageItemCellTextBinding.textCellProgress;
         }
     }
 

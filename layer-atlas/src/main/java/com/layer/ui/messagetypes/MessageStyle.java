@@ -17,6 +17,7 @@ public class MessageStyle extends ItemStyle {
     private int mOtherTextStyle;
     private float mOtherTextSize;
     private Typeface mOtherTextTypeface;
+    private boolean mIsMe;
 
     private MessageStyle(Builder builder) {
         mMyBubbleColor = builder.myBubbleColor;
@@ -64,6 +65,32 @@ public class MessageStyle extends ItemStyle {
     @ColorInt
     public int getOtherBubbleColor() {
         return mOtherBubbleColor;
+    }
+
+    public void setIsMe(boolean isMe) {
+        mIsMe = isMe;
+    }
+
+    @ColorInt
+    public int getBubbleColor() {
+        return mIsMe ? mMyBubbleColor : mOtherBubbleColor;
+    }
+
+    @ColorInt
+    public int getTextColor() {
+        return mIsMe ? mMyTextColor : mOtherTextColor;
+    }
+
+    public int getTextStyle() {
+        return mIsMe ? mMyTextStyle : mOtherTextStyle;
+    }
+
+    public float getTextSize() {
+        return mIsMe ? mMyTextSize : mOtherTextSize;
+    }
+
+    public Typeface getTextTypeface() {
+        return mIsMe ? mMyTextTypeface : mOtherTextTypeface;
     }
 
     @ColorInt

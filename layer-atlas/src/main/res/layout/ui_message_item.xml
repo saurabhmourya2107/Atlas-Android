@@ -116,7 +116,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:layout_marginRight="@dimen/layer_ui_padding_narrow"
-                    android:visibility="@{viewModel.avatarDisplayed}">
+                    android:visibility="@{viewModel.avatarVisibility}">
 
                     <com.layer.ui.avatar.AvatarView
                         android:id="@+id/avatar"

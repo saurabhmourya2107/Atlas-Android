@@ -2,12 +2,12 @@ package com.layer.ui.adapters.messages;
 
 import com.layer.ui.messagetypes.CellFactory;
 
-public class MessageCellType {
+public class MessageCell {
 
     protected final boolean mMe;
     protected final CellFactory mCellFactory;
 
-    public MessageCellType(boolean me, CellFactory CellFactory) {
+    public MessageCell(boolean me, CellFactory CellFactory) {
         mMe = me;
         mCellFactory = CellFactory;
     }
@@ -17,10 +17,10 @@ public class MessageCellType {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        MessageCellType messageCellType = (MessageCellType) o;
+        MessageCell messageCell = (MessageCell) o;
 
-        if (mMe != messageCellType.mMe) return false;
-        return mCellFactory.equals(messageCellType.mCellFactory);
+        if (mMe != messageCell.mMe) return false;
+        return mCellFactory.equals(messageCell.mCellFactory);
 
     }
 

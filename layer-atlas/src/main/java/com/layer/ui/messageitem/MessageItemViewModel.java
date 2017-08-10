@@ -38,7 +38,7 @@ public class MessageItemViewModel extends ItemViewModel<Message> {
         return mIsClusterSpaceVisible;
     }
 
-    public int isAvatarDisplayed() {
+    public int getAvatarVisibility() {
         if (mIsMyCellType) {
             return View.GONE;
         }
