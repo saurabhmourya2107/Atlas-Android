@@ -1,4 +1,4 @@
-package com.layer.ui.messageitem;
+package com.layer.ui.message;
 
 import android.databinding.Bindable;
 import android.view.View;

@@ -1,4 +1,4 @@
-package com.layer.ui.messagetypes.location;
+package com.layer.ui.message.messagetypes.location;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +15,7 @@ import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Message;
 import com.layer.ui.R;
 import com.layer.ui.databinding.UiMessageItemCellImageBinding;
-import com.layer.ui.messagetypes.CellFactory;
+import com.layer.ui.message.messagetypes.CellFactory;
 import com.layer.ui.util.Log;
 import com.layer.ui.util.Util;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.layer.ui.messagetypes.text.TextCellFactory;
+import com.layer.ui.message.messagetypes.text.TextCellFactory;
 import com.layer.ui.mock.MockLayerClient;
 import com.layer.ui.mock.MockMessageImpl;
 import com.layer.ui.mock.MockMessagePart;

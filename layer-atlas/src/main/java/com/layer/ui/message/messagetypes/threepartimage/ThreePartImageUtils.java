@@ -1,4 +1,4 @@
-package com.layer.ui.messagetypes.threepartimage;
+package com.layer.ui.message.messagetypes.threepartimage;
 
 import android.content.Context;
 import android.database.Cursor;

@@ -1,4 +1,4 @@
-package com.layer.ui.adapters.messages;
+package com.layer.ui.message;
 
 import android.content.Context;
 import android.databinding.ViewDataBinding;
@@ -12,9 +12,8 @@ import com.layer.ui.avatar.AvatarView;
 import com.layer.ui.avatar.AvatarViewModelImpl;
 import com.layer.ui.databinding.UiMessageItemBinding;
 import com.layer.ui.identity.IdentityFormatterImpl;
-import com.layer.ui.messageitem.MessageItemViewModel;
-import com.layer.ui.messagetypes.CellFactory;
-import com.layer.ui.messagetypes.MessageStyle;
+import com.layer.ui.message.messagetypes.CellFactory;
+import com.layer.ui.message.messagetypes.MessageStyle;
 import com.layer.ui.util.DateFormatter;
 import com.layer.ui.util.Util;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;

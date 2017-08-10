@@ -1,4 +1,4 @@
-package com.layer.ui.messagetypes.generic;
+package com.layer.ui.message.messagetypes.generic;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.layer.ui.R;
-import com.layer.ui.messagetypes.CellFactory;
+import com.layer.ui.message.messagetypes.CellFactory;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Message;
 import com.layer.sdk.messaging.MessagePart;

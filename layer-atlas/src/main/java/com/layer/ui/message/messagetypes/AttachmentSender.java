@@ -1,4 +1,4 @@
-package com.layer.ui.messagetypes;
+package com.layer.ui.message.messagetypes;
 
 import android.app.Activity;
 import android.content.Intent;

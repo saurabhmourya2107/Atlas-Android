@@ -1,7 +1,7 @@
-package com.layer.ui.messagetypes.text;
+package com.layer.ui.message.messagetypes.text;
 
 import com.layer.ui.R;
-import com.layer.ui.messagetypes.MessageSender;
+import com.layer.ui.message.messagetypes.MessageSender;
 import com.layer.ui.util.Log;
 import com.layer.ui.util.Util;
 import com.layer.sdk.messaging.Identity;

@@ -1,4 +1,4 @@
-package com.layer.ui.adapters.messages;
+package com.layer.ui.message;
 
 import android.databinding.ViewDataBinding;
 import android.view.ViewGroup;
@@ -6,8 +6,7 @@ import android.view.ViewGroup;
 import com.layer.sdk.messaging.Message;
 import com.layer.ui.adapters.ItemViewHolder;
 import com.layer.ui.databinding.UiMessageItemFooterBinding;
-import com.layer.ui.messageitem.MessageItemViewModel;
-import com.layer.ui.messagetypes.MessageStyle;
+import com.layer.ui.message.messagetypes.MessageStyle;
 
 public class MessageItemFooterViewHolder extends
         ItemViewHolder<Message, MessageItemViewModel, ViewDataBinding, MessageStyle> {

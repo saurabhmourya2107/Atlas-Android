@@ -7,7 +7,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Message;
 import com.layer.sdk.messaging.MessagePart;
-import com.layer.ui.messagetypes.generic.GenericCellFactory;
+import com.layer.ui.message.messagetypes.generic.GenericCellFactory;
 import com.layer.ui.mock.MockLayerClient;
 import com.layer.ui.mock.MockMessageImpl;
 import com.layer.ui.mock.MockMessagePart;

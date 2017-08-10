@@ -1,4 +1,4 @@
-package com.layer.ui.messagetypes.location;
+package com.layer.ui.message.messagetypes.location;
 
 import android.Manifest;
 import android.app.Activity;
@@ -17,7 +17,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.layer.ui.R;
-import com.layer.ui.messagetypes.AttachmentSender;
+import com.layer.ui.message.messagetypes.AttachmentSender;
 import com.layer.ui.util.Log;
 import com.layer.ui.util.Util;
 import com.layer.sdk.LayerClient;

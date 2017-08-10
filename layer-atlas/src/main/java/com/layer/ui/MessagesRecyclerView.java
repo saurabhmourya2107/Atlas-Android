@@ -24,9 +24,9 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.layer.ui.adapters.messages.MessagesAdapter;
-import com.layer.ui.messagetypes.CellFactory;
-import com.layer.ui.messagetypes.MessageStyle;
+import com.layer.ui.message.MessagesAdapter;
+import com.layer.ui.message.messagetypes.CellFactory;
+import com.layer.ui.message.messagetypes.MessageStyle;
 import com.layer.ui.recyclerview.ItemsRecyclerView;
 import com.layer.ui.util.DateFormatter;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;

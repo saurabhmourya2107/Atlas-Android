@@ -1,4 +1,4 @@
-package com.layer.ui.messagetypes.threepartimage;
+package com.layer.ui.message.messagetypes.threepartimage;
 
 import android.Manifest;
 import android.app.Activity;
@@ -15,7 +15,7 @@ import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 
 import com.layer.ui.R;
-import com.layer.ui.messagetypes.AttachmentSender;
+import com.layer.ui.message.messagetypes.AttachmentSender;
 import com.layer.ui.util.Log;
 import com.layer.ui.util.Util;
 import com.layer.sdk.messaging.Identity;

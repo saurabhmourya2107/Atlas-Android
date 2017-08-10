@@ -1,6 +1,6 @@
-package com.layer.ui.adapters.messages;
+package com.layer.ui.message;
 
-import com.layer.ui.messagetypes.CellFactory;
+import com.layer.ui.message.messagetypes.CellFactory;
 
 public class MessageCell {
 

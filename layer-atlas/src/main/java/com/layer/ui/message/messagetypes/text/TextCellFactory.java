@@ -1,4 +1,4 @@
-package com.layer.ui.messagetypes.text;
+package com.layer.ui.message.messagetypes.text;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
@@ -17,7 +17,7 @@ import com.layer.sdk.messaging.Message;
 import com.layer.sdk.messaging.MessagePart;
 import com.layer.ui.R;
 import com.layer.ui.databinding.UiMessageItemCellTextBinding;
-import com.layer.ui.messagetypes.CellFactory;
+import com.layer.ui.message.messagetypes.CellFactory;
 import com.layer.ui.util.Log;
 import com.layer.ui.util.Util;
 

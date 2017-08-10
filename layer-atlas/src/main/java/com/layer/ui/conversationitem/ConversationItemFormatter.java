@@ -6,8 +6,8 @@ import com.layer.sdk.messaging.Conversation;
 import com.layer.sdk.messaging.Identity;
 import com.layer.sdk.messaging.Message;
 import com.layer.ui.R;
-import com.layer.ui.messagetypes.CellFactory;
-import com.layer.ui.messagetypes.generic.GenericCellFactory;
+import com.layer.ui.message.messagetypes.CellFactory;
+import com.layer.ui.message.messagetypes.generic.GenericCellFactory;
 import com.layer.ui.util.Util;
 
 import java.text.DateFormat;

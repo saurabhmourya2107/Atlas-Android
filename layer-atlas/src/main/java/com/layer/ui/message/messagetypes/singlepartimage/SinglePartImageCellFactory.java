@@ -1,10 +1,9 @@
-package com.layer.ui.messagetypes.singlepartimage;
+package com.layer.ui.message.messagetypes.singlepartimage;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.ViewDataBinding;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.widget.ContentLoadingProgressBar;
@@ -19,7 +18,7 @@ import com.layer.sdk.messaging.Message;
 import com.layer.sdk.messaging.MessagePart;
 import com.layer.ui.R;
 import com.layer.ui.databinding.UiMessageItemCellImageBinding;
-import com.layer.ui.messagetypes.CellFactory;
+import com.layer.ui.message.messagetypes.CellFactory;
 import com.layer.ui.util.imagecache.ImageCacheWrapper;
 import com.layer.ui.util.imagecache.ImageRequestParameters;
 import com.layer.ui.util.imagepopup.ImagePopupActivity;
@@ -40,14 +39,6 @@ public class SinglePartImageCellFactory extends
         super(CACHE_SIZE_BYTES);
         this.mLayerClient = mLayerClient;
         this.mImageCacheWrapper = imageCacheWrapper;
-    }
-
-    /**
-     * @deprecated Use {@link #SinglePartImageCellFactory(LayerClient, ImageCacheWrapper)} instead
-     */
-    @Deprecated
-    public SinglePartImageCellFactory(Activity activity, LayerClient layerClient, ImageCacheWrapper imageCacheWrapper) {
-        this(layerClient, imageCacheWrapper);
     }
 
     @Override
@@ -150,14 +141,12 @@ public class SinglePartImageCellFactory extends
     public static class CellHolder extends CellFactory.CellHolder {
         ImageView mImageView;
         ContentLoadingProgressBar mProgressBar;
-        ViewDataBinding mViewDataBinding;
+        UiMessageItemCellImageBinding mUiMessageItemCellImageBinding;
 
-        public CellHolder(ViewDataBinding viewDataBinding) {
-            mViewDataBinding = viewDataBinding;
-            if (viewDataBinding instanceof UiMessageItemCellImageBinding) {
-                mImageView = ((UiMessageItemCellImageBinding) viewDataBinding).cellImage;
-                mProgressBar = ((UiMessageItemCellImageBinding) viewDataBinding).cellProgress;
-            }
+        public CellHolder(UiMessageItemCellImageBinding uiMessageItemCellImageBinding) {
+            mUiMessageItemCellImageBinding = uiMessageItemCellImageBinding;
+            mImageView = uiMessageItemCellImageBinding.cellImage;
+            mProgressBar = uiMessageItemCellImageBinding.cellProgress;
         }
     }
 

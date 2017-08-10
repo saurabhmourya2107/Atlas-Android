@@ -42,9 +42,9 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.layer.ui.messagetypes.AttachmentSender;
-import com.layer.ui.messagetypes.MessageSender;
-import com.layer.ui.messagetypes.text.TextSender;
+import com.layer.ui.message.messagetypes.AttachmentSender;
+import com.layer.ui.message.messagetypes.MessageSender;
+import com.layer.ui.message.messagetypes.text.TextSender;
 import com.layer.ui.util.EditTextUtil;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.listeners.LayerTypingIndicatorListener;

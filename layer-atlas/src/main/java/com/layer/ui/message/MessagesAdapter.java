@@ -1,4 +1,4 @@
-package com.layer.ui.adapters.messages;
+package com.layer.ui.message;
 
 import android.content.Context;
 import android.databinding.ViewDataBinding;
@@ -22,9 +22,8 @@ import com.layer.ui.adapters.ItemRecyclerViewAdapter;
 import com.layer.ui.adapters.ItemViewHolder;
 import com.layer.ui.databinding.UiMessageItemBinding;
 import com.layer.ui.databinding.UiMessageItemFooterBinding;
-import com.layer.ui.messageitem.MessageItemViewModel;
-import com.layer.ui.messagetypes.CellFactory;
-import com.layer.ui.messagetypes.MessageStyle;
+import com.layer.ui.message.messagetypes.CellFactory;
+import com.layer.ui.message.messagetypes.MessageStyle;
 import com.layer.ui.util.DateFormatter;
 import com.layer.ui.util.IdentityRecyclerViewEventListener;
 import com.layer.ui.util.Log;
