@@ -3,7 +3,7 @@
     <data>
         <variable
             name="messageStyle"
-            type="com.layer.ui.messagetypes.MessageStyle" />
+            type="com.layer.ui.message.messagetypes.MessageStyle" />
     </data>
 
     <merge

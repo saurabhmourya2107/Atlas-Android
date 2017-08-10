@@ -250,7 +250,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
      * @param cellFactories Cells to register.
      * @return This MessagesAdapter.
      */
-    public MessagesAdapter addCellFactories(CellFactory... cellFactories) {
+    public MessagesAdapter addCellFactories(List<CellFactory> cellFactories) {
         for (CellFactory cellFactory : cellFactories) {
             cellFactory.setStyle(getStyle());
             mCellFactories.add(cellFactory);

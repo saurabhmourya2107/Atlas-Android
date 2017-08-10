@@ -24,23 +24,22 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.layer.ui.message.MessagesAdapter;
-import com.layer.ui.message.messagetypes.CellFactory;
-import com.layer.ui.message.messagetypes.MessageStyle;
-import com.layer.ui.recyclerview.ItemsRecyclerView;
-import com.layer.ui.util.DateFormatter;
-import com.layer.ui.util.imagecache.ImageCacheWrapper;
-import com.layer.ui.util.itemanimators.NoChangeAnimator;
-import com.layer.ui.util.views.SwipeableItem;
-import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Conversation;
 import com.layer.sdk.messaging.Message;
 import com.layer.sdk.query.Predicate;
 import com.layer.sdk.query.Query;
 import com.layer.sdk.query.SortDescriptor;
+import com.layer.ui.adapters.ItemRecyclerViewAdapter;
+import com.layer.ui.message.MessagesAdapter;
+import com.layer.ui.message.messagetypes.CellFactory;
+import com.layer.ui.message.messagetypes.MessageStyle;
+import com.layer.ui.recyclerview.ItemsRecyclerView;
+import com.layer.ui.util.itemanimators.NoChangeAnimator;
+import com.layer.ui.util.views.SwipeableItem;
+
+import java.util.List;
 
 public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
-    private MessagesAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     private ItemTouchHelper mSwipeItemTouchHelper;
     private boolean mShouldShowAvatarsInOneOnOneConversations;
@@ -60,23 +59,10 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
         super(context);
     }
 
-    public MessagesRecyclerView init(LayerClient layerClient, ImageCacheWrapper imageCacheWrapper,
-            DateFormatter dateFormatter) {
+    private MessagesRecyclerView init() {
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mLayoutManager.setStackFromEnd(true);
         setLayoutManager(mLayoutManager);
-
-        // Create an adapter that auto-scrolls if we're already at the bottom
-        mAdapter = new MessagesAdapter(getContext(), layerClient, imageCacheWrapper, dateFormatter)
-                .setRecyclerView(this)
-                .setOnMessageAppendListener(new MessagesAdapter.OnMessageAppendListener() {
-                    @Override
-                    public void onMessageAppend(MessagesAdapter adapter, Message message) {
-                        autoScroll();
-                    }
-                });
-        mAdapter.setStyle(mMessageStyle);
-        super.setAdapter(mAdapter);
 
         // Don't flash items when changing content
         setItemAnimator(new NoChangeAnimator());
@@ -84,8 +70,10 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
         addOnScrollListener(new OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                for (CellFactory factory : mAdapter.getCellFactories()) {
-                    factory.onScrollStateChanged(newState);
+                if (mAdapter instanceof MessagesAdapter) {
+                    for (CellFactory factory : ((MessagesAdapter) mAdapter).getCellFactories()) {
+                        factory.onScrollStateChanged(newState);
+                    }
                 }
             }
         });
@@ -94,9 +82,23 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
         return this;
     }
 
-    @Override
-    public void setAdapter(Adapter adapter) {
-        throw new RuntimeException("AtlasMessagesRecyclerView sets its own Adapter");
+    public void setAdapter(ItemRecyclerViewAdapter adapter) {
+        if (adapter == null || !(adapter instanceof MessagesAdapter)) {
+            throw new RuntimeException("AtlasMessagesRecyclerView sets MessagesAdapter");
+        }
+
+        super.setAdapter(adapter);
+        mAdapter.setStyle(mMessageStyle);
+
+        init();
+        // Create an adapter that auto-scrolls if we're already at the bottom
+        ((MessagesAdapter) mAdapter).setRecyclerView(this)
+                .setOnMessageAppendListener(new MessagesAdapter.OnMessageAppendListener() {
+                    @Override
+                    public void onMessageAppend(MessagesAdapter adapter, Message message) {
+                        autoScroll();
+                    }
+                });
     }
 
     /**
@@ -108,16 +110,16 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
      */
     public MessagesRecyclerView setConversation(Conversation conversation) {
         if (conversation != null) {
-            mAdapter.setReadReceiptsEnabled(conversation.isReadReceiptsEnabled());
+            ((MessagesAdapter) mAdapter).setReadReceiptsEnabled(conversation.isReadReceiptsEnabled());
         }
-        mAdapter.setQuery(Query.builder(Message.class)
+        ((MessagesAdapter) mAdapter).setQuery(Query.builder(Message.class)
                 .predicate(new Predicate(Message.Property.CONVERSATION, Predicate.Operator.EQUAL_TO, conversation))
                 .sortDescriptor(new SortDescriptor(Message.Property.POSITION, SortDescriptor.Order.ASCENDING))
                 .build()).refresh();
         return this;
     }
 
-    public MessagesRecyclerView setOnMessageSwipeListener(SwipeableItem.OnSwipeListener<Message> listener) {
+    public void setOnMessageSwipeListener(SwipeableItem.OnSwipeListener<Message> listener) {
         if (mSwipeItemTouchHelper != null) {
             mSwipeItemTouchHelper.attachToRecyclerView(null);
         }
@@ -127,17 +129,15 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
             mSwipeItemTouchHelper = new ItemTouchHelper(listener);
             mSwipeItemTouchHelper.attachToRecyclerView(this);
         }
-        return this;
     }
 
     /**
      * Convenience pass-through to this list's MessagesAdapter.
      *
-     * @see MessagesAdapter#addCellFactories(CellFactory...)
+     * @see MessagesAdapter#addCellFactories(List)
      */
-    public MessagesRecyclerView addCellFactories(CellFactory... cellFactories) {
-        mAdapter.addCellFactories(cellFactories);
-        return this;
+    public void setCellFactories(List<CellFactory> cellFactories) {
+        ((MessagesAdapter) mAdapter).addCellFactories(cellFactories);
     }
 
     public MessagesRecyclerView setTextTypeface(Typeface myTypeface, Typeface otherTypeface) {
@@ -161,7 +161,7 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
      * @see MessagesAdapter#setFooterView(View)
      */
     public MessagesRecyclerView setFooterView(View footerView) {
-        mAdapter.setFooterView(footerView);
+        ((MessagesAdapter) mAdapter).setFooterView(footerView);
         autoScroll();
         return this;
     }
@@ -172,7 +172,7 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
      * @see MessagesAdapter#getFooterView()
      */
     public View getFooterView() {
-        return mAdapter.getFooterView();
+        return ((MessagesAdapter) mAdapter).getFooterView();
     }
 
     /**
@@ -181,7 +181,7 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
      * @see MessagesAdapter#getShouldShowAvatarInOneOnOneConversations()
      */
     public boolean getShouldShowAvatarInOneOnOneConversations() {
-        return mAdapter.getShouldShowAvatarInOneOnOneConversations();
+        return ((MessagesAdapter) mAdapter).getShouldShowAvatarInOneOnOneConversations();
     }
 
     /**
@@ -190,7 +190,7 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
      * @see MessagesAdapter#setShouldShowAvatarInOneOnOneConversations(boolean)
      */
     public MessagesRecyclerView setShouldShowAvatarInOneOnOneConversations(boolean shouldShowAvatarInOneOnOneConversations) {
-        mAdapter.setShouldShowAvatarInOneOnOneConversations(shouldShowAvatarInOneOnOneConversations);
+        ((MessagesAdapter) mAdapter).setShouldShowAvatarInOneOnOneConversations(shouldShowAvatarInOneOnOneConversations);
         return this;
     }
 
@@ -200,7 +200,7 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
      * @see MessagesAdapter#getShouldShowAvatarPresence()
      */
     public boolean getShouldShowAvatarPresence() {
-        return mAdapter.getShouldShowAvatarPresence();
+        return ((MessagesAdapter) mAdapter).getShouldShowAvatarPresence();
     }
 
     /**
@@ -209,8 +209,14 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
      * @see MessagesAdapter#setShouldShowAvatarPresence(boolean)
      */
     public MessagesRecyclerView setShouldShowAvatarPresence(boolean shouldShowAvatarPresence) {
-        mAdapter.setShouldShowAvatarPresence(shouldShowAvatarPresence);
+        ((MessagesAdapter) mAdapter).setShouldShowAvatarPresence(shouldShowAvatarPresence);
         return this;
+    }
+
+    public void onDestroy() {
+        if (mAdapter != null) {
+            mAdapter.onDestroy();
+        }
     }
 
     /**

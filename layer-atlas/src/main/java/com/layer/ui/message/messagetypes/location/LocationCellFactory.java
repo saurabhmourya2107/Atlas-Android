@@ -45,14 +45,6 @@ public class LocationCellFactory extends
         this.mImageCacheWrapper = imageCacheWrapper;
     }
 
-    /**
-     * @deprecated Use {@link #LocationCellFactory(ImageCacheWrapper)} instead
-     */
-    @Deprecated
-    public LocationCellFactory(Context context, ImageCacheWrapper imageCacheWrapper) {
-        this(imageCacheWrapper);
-    }
-
     public boolean isType(Message message) {
         return message.getMessageParts().size() == 1 && message.getMessageParts().get(0).getMimeType().equals(MIME_TYPE);
     }
