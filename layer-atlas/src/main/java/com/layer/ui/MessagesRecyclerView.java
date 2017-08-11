@@ -49,6 +49,7 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
     public MessagesRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         parseStyle(getContext(), attrs, defStyle);
+        init();
     }
 
     public MessagesRecyclerView(Context context, AttributeSet attrs) {
@@ -57,40 +58,44 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
 
     public MessagesRecyclerView(Context context) {
         super(context);
+        init();
     }
 
-    private MessagesRecyclerView init() {
+    private void init() {
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mLayoutManager.setStackFromEnd(true);
         setLayoutManager(mLayoutManager);
-
         // Don't flash items when changing content
         setItemAnimator(new NoChangeAnimator());
+    }
 
+    @Override
+    public void setAdapter(Adapter adapter) {
+        throwExceptionIfNotMessageAdapter(adapter);
+        setAdapter((ItemRecyclerViewAdapter) adapter);
+    }
+
+    private void throwExceptionIfNotMessageAdapter(Adapter adapter) {
+        if (adapter == null || !(adapter instanceof MessagesAdapter)) {
+            throw new IllegalArgumentException("The argument passed is not of the correct type");
+        }
+    }
+
+    public void setAdapter(ItemRecyclerViewAdapter adapter) {
+        throwExceptionIfNotMessageAdapter(adapter);
+
+        super.setAdapter(adapter);
+        mAdapter.setStyle(mMessageStyle);
+        setShouldShowAvatarInOneOnOneConversations(mShouldShowAvatarsInOneOnOneConversations);
         addOnScrollListener(new OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (mAdapter instanceof MessagesAdapter) {
-                    for (CellFactory factory : ((MessagesAdapter) mAdapter).getCellFactories()) {
-                        factory.onScrollStateChanged(newState);
-                    }
+                for (CellFactory factory : ((MessagesAdapter) mAdapter).getCellFactories()) {
+                    factory.onScrollStateChanged(newState);
                 }
             }
         });
 
-        setShouldShowAvatarInOneOnOneConversations(mShouldShowAvatarsInOneOnOneConversations);
-        return this;
-    }
-
-    public void setAdapter(ItemRecyclerViewAdapter adapter) {
-        if (adapter == null || !(adapter instanceof MessagesAdapter)) {
-            throw new RuntimeException("AtlasMessagesRecyclerView sets MessagesAdapter");
-        }
-
-        super.setAdapter(adapter);
-        mAdapter.setStyle(mMessageStyle);
-
-        init();
         // Create an adapter that auto-scrolls if we're already at the bottom
         ((MessagesAdapter) mAdapter).setRecyclerView(this)
                 .setOnMessageAppendListener(new MessagesAdapter.OnMessageAppendListener() {
@@ -108,7 +113,7 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
      * @param conversation Conversation to display Messages for.
      * @return This AtlasMessagesRecyclerView.
      */
-    public MessagesRecyclerView setConversation(Conversation conversation) {
+    public void setConversation(Conversation conversation) {
         if (conversation != null) {
             ((MessagesAdapter) mAdapter).setReadReceiptsEnabled(conversation.isReadReceiptsEnabled());
         }
@@ -116,7 +121,6 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
                 .predicate(new Predicate(Message.Property.CONVERSATION, Predicate.Operator.EQUAL_TO, conversation))
                 .sortDescriptor(new SortDescriptor(Message.Property.POSITION, SortDescriptor.Order.ASCENDING))
                 .build()).refresh();
-        return this;
     }
 
     public void setOnMessageSwipeListener(SwipeableItem.OnSwipeListener<Message> listener) {
@@ -140,10 +144,9 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
         ((MessagesAdapter) mAdapter).addCellFactories(cellFactories);
     }
 
-    public MessagesRecyclerView setTextTypeface(Typeface myTypeface, Typeface otherTypeface) {
+    public void setTextTypeface(Typeface myTypeface, Typeface otherTypeface) {
         mMessageStyle.setMyTextTypeface(myTypeface);
         mMessageStyle.setOtherTextTypeface(otherTypeface);
-        return this;
     }
 
     /**
@@ -160,10 +163,9 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
      *
      * @see MessagesAdapter#setFooterView(View)
      */
-    public MessagesRecyclerView setFooterView(View footerView) {
+    public void setFooterView(View footerView) {
         ((MessagesAdapter) mAdapter).setFooterView(footerView);
         autoScroll();
-        return this;
     }
 
     /**
@@ -189,9 +191,8 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
      *
      * @see MessagesAdapter#setShouldShowAvatarInOneOnOneConversations(boolean)
      */
-    public MessagesRecyclerView setShouldShowAvatarInOneOnOneConversations(boolean shouldShowAvatarInOneOnOneConversations) {
+    public void setShouldShowAvatarInOneOnOneConversations(boolean shouldShowAvatarInOneOnOneConversations) {
         ((MessagesAdapter) mAdapter).setShouldShowAvatarInOneOnOneConversations(shouldShowAvatarInOneOnOneConversations);
-        return this;
     }
 
     /**
@@ -208,9 +209,8 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
      *
      * @see MessagesAdapter#setShouldShowAvatarPresence(boolean)
      */
-    public MessagesRecyclerView setShouldShowAvatarPresence(boolean shouldShowAvatarPresence) {
+    public void setShouldShowAvatarPresence(boolean shouldShowAvatarPresence) {
         ((MessagesAdapter) mAdapter).setShouldShowAvatarPresence(shouldShowAvatarPresence);
-        return this;
     }
 
     public void onDestroy() {

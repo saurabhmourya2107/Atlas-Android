@@ -68,7 +68,7 @@
                 android:orientation="horizontal"
                 android:paddingBottom="@dimen/layer_ui_message_item_time_group_padding_bottom"
                 android:paddingTop="@dimen/layer_ui_message_item_time_group_padding_top"
-                android:visibility="@{viewModel.bindDateTimeForMessage ? View.VISIBLE : View.GONE}">
+                android:visibility="@{viewModel.shouldBindDateTimeForMessage ? View.VISIBLE : View.GONE}">
 
                 <TextView
                     android:id="@+id/time_group_day"
@@ -103,7 +103,7 @@
                 android:text="@{viewModel.sender}"
                 android:textColor="@color/layer_ui_text_gray"
                 android:textSize="@dimen/layer_ui_text_size_message_item_metadata"
-                android:visibility="@{viewModel.displayName ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{viewModel.shouldShowDisplayName ? View.VISIBLE : View.GONE}" />
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -43,10 +43,9 @@ public class MessageCellViewHolder extends
         uiMessageItemBinding.avatar.init(new AvatarViewModelImpl(imageCachWrapper), new IdentityFormatterImpl());
     }
 
-    public void bind(Message message, boolean oneOnOne,
-            boolean shouldShowAvatarInOneOnOneConversations, boolean isClusterSpaceVisible,
-            boolean shouldDisplayName, boolean shouldBindDateTimeForMessage, boolean shouldClusterBeVisible,
-            String recipientStatus, boolean isRecipientStatusVisible, DateFormatter dateFormatter, boolean isCellTypeMe) {
+    public void bind(Message message, int viewVisibilityType, boolean isClusterSpaceVisible,
+            boolean shouldDisplayName, boolean shouldBindDateTimeForMessage, String recipientStatus,
+            boolean isRecipientStatusVisible, DateFormatter dateFormatter, boolean isCellTypeMe) {
 
 
         Context context = mBinding.getRoot().getContext();
@@ -67,15 +66,13 @@ public class MessageCellViewHolder extends
             messageItemViewModel.setParticipants(
                     message.getSender());
         }
-        messageItemViewModel.setOneOnOne(oneOnOne);
         messageItemViewModel.setRecipientStatus(recipientStatus);
-        messageItemViewModel.setRecipientStatusVisible(isRecipientStatusVisible);
+        messageItemViewModel.setIsRecipientStatusVisible(isRecipientStatusVisible);
         messageItemViewModel.setGroupTime(" " + timeBarTimeText);
-        messageItemViewModel.setShouldShowAvatar(shouldShowAvatarInOneOnOneConversations);
-        messageItemViewModel.setClusterSpaceVisible(isClusterSpaceVisible);
-        messageItemViewModel.setIsDisplayName(shouldDisplayName);
-        messageItemViewModel.setIsBindDateTimeForMessage(shouldBindDateTimeForMessage);
-        messageItemViewModel.setShouldClusterBeVisible(shouldClusterBeVisible);
+        messageItemViewModel.setAvatarViewVisibilityType(viewVisibilityType);
+        messageItemViewModel.setIsClusterSpaceVisible(isClusterSpaceVisible);
+        messageItemViewModel.setShouldShowDisplayName(shouldDisplayName);
+        messageItemViewModel.setShouldBindDateTimeForMessage(shouldBindDateTimeForMessage);
         messageItemViewModel.setParticipants(message.getSender());
         messageItemViewModel.setMessageSent(message.isSent());
         messageItemViewModel.setMyCellType(isCellTypeMe);

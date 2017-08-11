@@ -374,9 +374,25 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
             }
         }
 
-        viewHolder.bind(message, oneOnOne, mShouldShowAvatarInOneOnOneConversations,
-                isClusterSpaceVisible, shouldDisplayName, shouldBindDateTimeForMessage,
-                shouldClusterBeVisible, str, isRecipientStatusVisible, mDateFormatter, messageCell.mMe);
+        boolean isAvatarViewVisibilitySet = false;
+        int avatarViewVisibilityType = 0;
+
+        if (messageCell.mMe || (oneOnOne && !mShouldShowAvatarInOneOnOneConversations)) {
+            avatarViewVisibilityType = View.GONE;
+            isAvatarViewVisibilitySet = true;
+        }
+
+        if (!isAvatarViewVisibilitySet && ((oneOnOne && mShouldShowAvatarInOneOnOneConversations) || shouldClusterBeVisible)) {
+            avatarViewVisibilityType = View.VISIBLE;
+            isAvatarViewVisibilitySet = true;
+        }
+
+        if (!isAvatarViewVisibilitySet) {
+            avatarViewVisibilityType = View.INVISIBLE;
+        }
+
+        viewHolder.bind(message, avatarViewVisibilityType, isClusterSpaceVisible, shouldDisplayName,
+                shouldBindDateTimeForMessage, str, isRecipientStatusVisible, mDateFormatter, messageCell.mMe);
 
         if (!oneOnOne && (messageCluster.mClusterWithNext == null
                 || messageCluster.mClusterWithNext != MessageCluster.Type.LESS_THAN_MINUTE)) {
