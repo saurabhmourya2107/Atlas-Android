@@ -122,11 +122,9 @@ public class AvatarView extends View {
      * Should be called from UI thread.
      */
     public void setParticipants(Set<Identity> participants) {
-        if (participants != null) {
-            mParticipants.clear();
-            mParticipants.addAll(participants);
-            update();
-        }
+        mParticipants.clear();
+        mParticipants.addAll(participants);
+        update();
     }
 
     public Set<Identity> getParticipants() {
