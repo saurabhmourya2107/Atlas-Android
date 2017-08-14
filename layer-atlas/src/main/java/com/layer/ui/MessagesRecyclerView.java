@@ -130,6 +130,7 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
         if (listener == null) {
             mSwipeItemTouchHelper = null;
         } else {
+            listener.setBaseAdapter( (MessagesAdapter) mAdapter);
             mSwipeItemTouchHelper = new ItemTouchHelper(listener);
             mSwipeItemTouchHelper.attachToRecyclerView(this);
         }

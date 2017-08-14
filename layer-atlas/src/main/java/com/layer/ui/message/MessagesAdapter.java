@@ -18,6 +18,7 @@ import com.layer.sdk.query.ListViewController;
 import com.layer.sdk.query.Query;
 import com.layer.sdk.query.RecyclerViewController;
 import com.layer.ui.R;
+import com.layer.ui.adapters.BaseAdapter;
 import com.layer.ui.adapters.ItemRecyclerViewAdapter;
 import com.layer.ui.adapters.ItemViewHolder;
 import com.layer.ui.databinding.UiMessageItemBinding;
@@ -62,7 +63,8 @@ import java.util.Set;
  * @see CellFactory
  */
 public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageItemViewModel,
-        ViewDataBinding, MessageStyle, ItemViewHolder<Message, MessageItemViewModel, ViewDataBinding, MessageStyle>> {
+        ViewDataBinding, MessageStyle, ItemViewHolder<Message, MessageItemViewModel, ViewDataBinding, MessageStyle>> implements
+        BaseAdapter<Message>{
 
     private static final String TAG = MessagesAdapter.class.getSimpleName();
     private final static int VIEW_TYPE_FOOTER = 0;
@@ -658,6 +660,12 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
             Log.perf("Conversations adapter - onQueryItemMoved. From: " + fromPosition + " To: "
                     + toPosition);
         }
+    }
+
+    @Override
+    public Message getItem(RecyclerView.ViewHolder viewHolder) {
+        if (!(viewHolder instanceof MessageCellViewHolder)) return null;
+        return ((MessageCellViewHolder) viewHolder).mMessage;
     }
 
     /**
