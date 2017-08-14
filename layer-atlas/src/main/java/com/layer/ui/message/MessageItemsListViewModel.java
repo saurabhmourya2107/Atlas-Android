@@ -17,7 +17,7 @@ import java.util.List;
 public class MessageItemsListViewModel extends BaseObservable {
     private ItemRecyclerViewAdapter mMessageItemsAdapter;
     private List<CellFactory> mCellFactories;
-    private SwipeableItem.OnSwipeListener<Message> mOnMessageSwipeListener;
+    private SwipeableItem.OnItemSwipeListener<Message> mOnMessageSwipeListener;
 
     public MessageItemsListViewModel(Context context, LayerClient layerClient,
             ImageCacheWrapper imageCacheWrapper, DateFormatter dateFormatter) {
@@ -38,11 +38,11 @@ public class MessageItemsListViewModel extends BaseObservable {
         mCellFactories = cellFactories;
     }
 
-    public void setOnMessageSwipeListener(SwipeableItem.OnSwipeListener<Message> onMessageSwipeListener) {
+    public void setOnMessageItemSwipeListener(SwipeableItem.OnItemSwipeListener<Message> onMessageSwipeListener) {
         mOnMessageSwipeListener = onMessageSwipeListener;
     }
 
-    public SwipeableItem.OnSwipeListener<Message> getOnMessageSwipeListener() {
+    public SwipeableItem.OnItemSwipeListener<Message> getOnMessageSwipeListener() {
         return mOnMessageSwipeListener;
     }
 }

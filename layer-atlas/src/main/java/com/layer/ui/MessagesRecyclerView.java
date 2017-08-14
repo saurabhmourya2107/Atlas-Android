@@ -123,14 +123,14 @@ public class MessagesRecyclerView extends ItemsRecyclerView<Message> {
                 .build()).refresh();
     }
 
-    public void setOnMessageSwipeListener(SwipeableItem.OnSwipeListener<Message> listener) {
+    public void setOnMessageSwipeListener(SwipeableItem.OnItemSwipeListener<Message> listener) {
         if (mSwipeItemTouchHelper != null) {
             mSwipeItemTouchHelper.attachToRecyclerView(null);
         }
         if (listener == null) {
             mSwipeItemTouchHelper = null;
         } else {
-            listener.setBaseAdapter( (MessagesAdapter) mAdapter);
+            listener.setAdapter(mAdapter);
             mSwipeItemTouchHelper = new ItemTouchHelper(listener);
             mSwipeItemTouchHelper.attachToRecyclerView(this);
         }
