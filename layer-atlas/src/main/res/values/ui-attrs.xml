@@ -5,7 +5,7 @@
     <!-- UI Component Styles -->
     <!-- ###################### -->
     <attr name="FourPartItemsListView" format="reference" />
-    <attr name="MessageComposer" format="reference" />
+    <attr name="ComposeBar" format="reference" />
     <attr name="MessagesRecyclerView" format="reference" />
     <attr name="AddressBar" format="reference" />
     <attr name="TypingIndicator" format="reference" />
@@ -83,7 +83,7 @@
         <attr name="itemHeight" format="dimension|reference"/>
     </declare-styleable>
 
-    <declare-styleable name="MessageComposer">
+    <declare-styleable name="ComposeBar">
         <attr name="inputTextColor" />
         <attr name="inputTextSize" />
         <attr name="inputTextTypeface" />
@@ -92,6 +92,7 @@
         <attr name="inputUnderlineColor" />
         <attr name="inputCursorColor" />
         <attr name="attachmentSendersBackground" format="color|reference" />
+        <attr name="placeHolderText" format="string|reference"/>
     </declare-styleable>
 
     <declare-styleable name="MessagesRecyclerView">

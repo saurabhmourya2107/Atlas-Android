@@ -37,6 +37,7 @@ import com.layer.ui.recyclerview.ItemsRecyclerView;
 import com.layer.ui.util.itemanimators.NoChangeAnimator;
 import com.layer.ui.util.views.SwipeableItem;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MessagesRecyclerView extends ItemsRecyclerView<Message> {

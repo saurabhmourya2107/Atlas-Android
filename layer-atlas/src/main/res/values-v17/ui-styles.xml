@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ########## -->
+    <!-- Compose Bar -->
+    <!-- ########## -->
+
+    <style name="ComposeBar">
+        <item name="android:paddingStart">@dimen/layer_ui_compose_bar_padding_side</item>
+        <item name="android:paddingEnd">@dimen/layer_ui_compose_bar_padding_side</item>
+    </style>
+
+    <style name="ComposeBar.ImageButton" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_marginStart">@dimen/layer_ui_compose_bar_button_side_margin</item>
+        <item name="android:layout_marginEnd">@dimen/layer_ui_compose_bar_button_side_margin</item>
+    </style>
+</resources>

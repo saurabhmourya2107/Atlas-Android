@@ -1,23 +1,27 @@
 package com.layer.ui.message.messagetypes.text;
 
-import com.layer.ui.R;
-import com.layer.ui.message.messagetypes.MessageSender;
-import com.layer.ui.util.Log;
-import com.layer.ui.util.Util;
+import android.content.Context;
+
+import com.layer.sdk.LayerClient;
 import com.layer.sdk.messaging.Identity;
 import com.layer.sdk.messaging.Message;
 import com.layer.sdk.messaging.MessageOptions;
 import com.layer.sdk.messaging.MessagePart;
 import com.layer.sdk.messaging.PushNotificationPayload;
+import com.layer.ui.R;
+import com.layer.ui.message.messagetypes.MessageSender;
+import com.layer.ui.util.Log;
+import com.layer.ui.util.Util;
 
 public class TextSender extends MessageSender {
     private final int mMaxNotificationLength;
 
-    public TextSender() {
-        this(200);
+    public TextSender(Context context, LayerClient layerClient) {
+        this(context, layerClient, 200);
     }
 
-    public TextSender(int maxNotificationLength) {
+    public TextSender(Context context, LayerClient layerClient, int maxNotificationLength) {
+        super(context, layerClient);
         mMaxNotificationLength = maxNotificationLength;
     }
 

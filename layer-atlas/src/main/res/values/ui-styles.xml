@@ -12,7 +12,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.    
 -->
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
     <!-- ############################## -->
     <!-- Default UI Component Styles -->
@@ -39,17 +39,6 @@
         <item name="avatarTextColor">@color/layer_ui_text_black</item>
         <item name="avatarBackgroundColor">@color/layer_ui_avatar_background</item>
         <item name="avatarBorderColor">@color/layer_ui_avatar_border</item>
-    </style>
-
-    <style name="MessageComposer">
-        <item name="inputTextColor">@color/layer_ui_text_black</item>
-        <item name="inputTextSize">@dimen/layer_ui_text_size_input</item>
-        <item name="inputTextTypeface">normal</item>
-        <item name="inputTextStyle">normal</item>
-        <item name="android:enabled">true</item>
-        <item name="inputUnderlineColor">@color/layer_ui_color_primary_blue</item>
-        <item name="inputCursorColor">@color/layer_ui_color_primary_blue</item>
-        <item name="attachmentSendersBackground">@drawable/ui_popup_background</item>
     </style>
 
     <style name="MessagesRecyclerView">
@@ -112,4 +101,29 @@
         <item name="android:tint">@color/layer_ui_text_white</item>
     </style>
 
+
+    <!-- ########## -->
+    <!-- Compose Bar -->
+    <!-- ########## -->
+
+    <style name="ComposeBar">
+        <item name="android:maxLines">5</item>
+        <item name="inputTextColor">@color/layer_ui_text_black</item>
+        <item name="inputTextSize">@dimen/layer_ui_text_size_input</item>
+        <item name="inputTextTypeface">normal</item>
+        <item name="inputTextStyle">normal</item>
+        <item name="android:enabled">true</item>
+        <item name="inputUnderlineColor">@color/layer_ui_color_primary_blue</item>
+        <item name="inputCursorColor">@color/layer_ui_color_primary_blue</item>
+        <item name="attachmentSendersBackground">@drawable/ui_popup_background</item>
+    </style>
+
+    <style name="ComposeBarImageButton" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_marginLeft">@dimen/layer_ui_compose_bar_button_side_margin</item>
+        <item name="android:layout_marginRight">@dimen/layer_ui_compose_bar_button_side_margin</item>
+        <item name="android:layout_width">@dimen/layer_ui_compose_bar_image_button_height</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:tint">@android:color/black</item>
+        <item name="android:visibility">gone</item>
+    </style>
 </resources>

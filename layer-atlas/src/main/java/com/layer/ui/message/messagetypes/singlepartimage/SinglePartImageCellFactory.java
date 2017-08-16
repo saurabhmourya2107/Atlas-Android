@@ -35,10 +35,10 @@ public class SinglePartImageCellFactory extends
     private final LayerClient mLayerClient;
     private final ImageCacheWrapper mImageCacheWrapper;
 
-    public SinglePartImageCellFactory(LayerClient mLayerClient, ImageCacheWrapper imageCacheWrapper) {
+    public SinglePartImageCellFactory(LayerClient layerClient, ImageCacheWrapper imageCacheWrapper) {
         super(CACHE_SIZE_BYTES);
-        this.mLayerClient = mLayerClient;
-        this.mImageCacheWrapper = imageCacheWrapper;
+        mLayerClient = layerClient;
+        mImageCacheWrapper = imageCacheWrapper;
     }
 
     @Override

@@ -16,8 +16,11 @@
 <resources>
 
     <color name="layer_ui_color_primary_blue">#FF21AAE1</color>
-    <color name="layer_ui_color_dark_blue">#FF198BB8</color>
+    <color name="layer_ui_color_dark_blue">#FF1094D0</color>
     <color name="layer_ui_color_primary_gray">#FFEBEBEB</color>
+
+    <color name="layer_ui_color_primary_gray_3">#FFDADDE4</color>
+    <color name="layer_ui_color_primary_gray_5">#FFA4A8B2</color>
 
     <color name="layer_ui_status_bar_background">@color/layer_ui_color_dark_blue</color>
     <color name="layer_ui_action_bar_background">@color/layer_ui_color_primary_blue</color>
@@ -67,6 +70,18 @@
     <color name="layer_ui_presence_away">#f7ca40</color>
     <color name="layer_ui_presence_invisible">#50c062</color>
     <color name="layer_ui_presence_offline">#99999c</color>
+
+
+    <!-- ########## -->
+    <!-- Compose Bar -->
+    <!-- ########## -->
+
+    <color name="layer_ui_compose_bar_background_enabled">@android:color/white</color>
+    <color name="layer_ui_compose_bar_background_disabled">@color/layer_ui_color_primary_gray_5</color>
+
+    <color name="layer_ui_compose_bar_send_button_text_enabled">@color/layer_ui_color_dark_blue</color>
+    <color name="layer_ui_compose_bar_send_button_text_disabled">@color/layer_ui_color_primary_gray_5</color>
+    <color name="layer_ui_compose_bar_send_button_text_pressed">@color/layer_ui_color_dark_blue</color>
 
 
 </resources>

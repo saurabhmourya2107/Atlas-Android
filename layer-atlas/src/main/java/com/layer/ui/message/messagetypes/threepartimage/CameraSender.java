@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 
+import com.layer.sdk.LayerClient;
 import com.layer.ui.R;
 import com.layer.ui.message.messagetypes.AttachmentSender;
 import com.layer.ui.util.Log;
@@ -48,12 +49,12 @@ public class CameraSender extends AttachmentSender {
     private final AtomicReference<String> mPhotoFilePath = new AtomicReference<String>(null);
     private final String mFileProviderAuthority;
 
-    public CameraSender(int titleResId, Integer iconResId, Activity activity, @NonNull String fileProviderAuthority) {
-        this(activity.getString(titleResId), iconResId, activity, fileProviderAuthority);
+    public CameraSender(int titleResId, Integer iconResId, Activity activity, LayerClient layerClient, @NonNull String fileProviderAuthority) {
+        this(activity.getString(titleResId), iconResId, activity, layerClient, fileProviderAuthority);
     }
 
-    public CameraSender(String title, Integer iconResId, Activity activity, @NonNull String fileProviderAuthority) {
-        super(title, iconResId);
+    public CameraSender(String title, Integer iconResId, Activity activity, LayerClient layerClient, @NonNull String fileProviderAuthority) {
+        super(activity.getApplicationContext(), layerClient, title, iconResId);
         mActivity = new WeakReference<Activity>(activity);
         if (TextUtils.isEmpty(fileProviderAuthority)) {
             throw new IllegalArgumentException("Empty file provider authority");

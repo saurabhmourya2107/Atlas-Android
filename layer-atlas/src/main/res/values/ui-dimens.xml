@@ -22,7 +22,7 @@
     <dimen name="layer_ui_margin_large">12dp</dimen>
     <dimen name="layer_ui_margin_medium">10dp</dimen>
     <dimen name="layer_ui_margin_small">8dp</dimen>
-    <dimen name="layer_ui_margin_tiny">8dp</dimen>
+    <dimen name="layer_ui_margin_tiny">4dp</dimen>
 
     <dimen name="layer_ui_padding_normal">16dp</dimen>
     <dimen name="layer_ui_padding_narrow">8dp</dimen>
@@ -141,5 +141,15 @@
     <dimen name="layer_ui_item_right_accessory_text_medium">12sp</dimen>
     <dimen name="layer_ui_item_right_accessory_text_small">8sp</dimen>
     <dimen name="layer_ui_item_right_accessory_text_tiny">8sp</dimen>
+
+    <!-- ####################################################################################### -->
+    <!-- # Compose Bar                                                                         # -->
+    <!-- ####################################################################################### -->
+
+    <dimen name="layer_ui_compose_bar_height">48dp</dimen>
+    <dimen name="layer_ui_compose_bar_padding_side">@dimen/layer_ui_margin_tiny</dimen>
+    <dimen name="layer_ui_compose_bar_button_side_margin">@dimen/layer_ui_margin_small</dimen>
+    <dimen name="layer_ui_compose_bar_image_button_height">@dimen/layer_ui_primary_icon_size</dimen>
+    <dimen name="layer_ui_compose_bar_image_button_width">@dimen/layer_ui_primary_icon_size</dimen>
 
 </resources>

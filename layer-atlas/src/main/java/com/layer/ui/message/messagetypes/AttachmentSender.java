@@ -1,16 +1,19 @@
 package com.layer.ui.message.messagetypes;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.layer.sdk.LayerClient;
+
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
 /**
- * AttachmentSenders populate the AtlasMessageComposer attachment menu and handle message sending
+ * AttachmentSenders populate the ComposeBar attachment menu and handle message sending
  * requests.  AttachmentSenders can interact with the Activity lifecycle to preserve instance state
  * and receive activity results when needed.
  */
@@ -18,7 +21,8 @@ public abstract class AttachmentSender extends MessageSender {
     private final String mTitle;
     private final Integer mIcon;
 
-    public AttachmentSender(String title, Integer icon) {
+    public AttachmentSender(Context context, LayerClient layerClient, String title, Integer icon) {
+        super(context, layerClient);
         mTitle = title;
         mIcon = icon;
     }
@@ -72,7 +76,7 @@ public abstract class AttachmentSender extends MessageSender {
     }
 
     /**
-     * Returns the mTitle for this AttachmentSender, typically for use in the AtlasMessageComposer
+     * Returns the mTitle for this AttachmentSender, typically for use in the ComposeBar
      * attachment menu.
      *
      * @return The mTitle for this AttachmentSender.
@@ -83,7 +87,7 @@ public abstract class AttachmentSender extends MessageSender {
 
     /**
      * Returns the icon resource ID for this AttachmentSender, typically for use in the
-     * AtlasMessageComposer attachment menu, or `null` for none.
+     * ComposeBar attachment menu, or `null` for none.
      *
      * @return The icon resource ID for this AttachmentSender.
      */

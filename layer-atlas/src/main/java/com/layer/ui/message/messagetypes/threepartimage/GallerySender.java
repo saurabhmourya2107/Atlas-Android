@@ -8,13 +8,14 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 
+import com.layer.sdk.LayerClient;
+import com.layer.sdk.messaging.Identity;
+import com.layer.sdk.messaging.Message;
+import com.layer.sdk.messaging.PushNotificationPayload;
 import com.layer.ui.R;
 import com.layer.ui.message.messagetypes.AttachmentSender;
 import com.layer.ui.util.Log;
 import com.layer.ui.util.Util;
-import com.layer.sdk.messaging.Identity;
-import com.layer.sdk.messaging.Message;
-import com.layer.sdk.messaging.PushNotificationPayload;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -31,12 +32,12 @@ public class GallerySender extends AttachmentSender {
 
     private WeakReference<Activity> mActivity = new WeakReference<Activity>(null);
 
-    public GallerySender(int titleResId, Integer iconResId, Activity activity) {
-        this(activity.getString(titleResId), iconResId, activity);
+    public GallerySender(int titleResId, Integer iconResId, Activity activity, LayerClient layerClient) {
+        this(activity.getString(titleResId), iconResId, activity, layerClient);
     }
 
-    public GallerySender(String title, Integer iconResId, Activity activity) {
-        super(title, iconResId);
+    public GallerySender(String title, Integer iconResId, Activity activity, LayerClient layerClient) {
+        super(activity.getApplicationContext(), layerClient, title, iconResId);
         mActivity = new WeakReference<Activity>(activity);
     }
 
@@ -72,7 +73,7 @@ public class GallerySender extends AttachmentSender {
         if (!hasPermissions(activity, PERMISSION_READ)) {
             if (Log.isLoggable(Log.VERBOSE)) Log.v("Requesting permissions");
             requestPermissions(activity, PERMISSION_REQUEST_CODE, PERMISSION_READ);
-        }else {
+        } else {
             if (Log.isLoggable(Log.VERBOSE)) Log.v("Sending gallery image");
             startGalleryIntent(activity);
         }

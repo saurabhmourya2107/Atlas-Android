@@ -3,5 +3,9 @@
     <item android:drawable="@drawable/ui_ctl_edit_text_activated" android:state_pressed="true" />
     <item android:drawable="@drawable/ui_ctl_edit_text_activated" android:state_focused="true" />
     <item android:drawable="@drawable/ui_ctl_edit_text_activated" android:state_activated="true" />
-    <item android:drawable="@drawable/ui_ctl_edit_text_enabled" />
+    <item android:drawable="@drawable/ui_ctl_edit_text_enabled" android:state_enabled="true"/>
+    <item android:drawable="@drawable/ui_ctl_edit_text_enabled" android:state_enabled="false">
+        <nine-patch android:src="@drawable/ui_ctl_edit_text_enabled"
+            android:tint="@color/layer_ui_compose_bar_background_disabled"/>
+    </item>
 </selector>

@@ -49,12 +49,12 @@ public class LocationSender extends AttachmentSender {
 
     private WeakReference<Activity> mActivity = new WeakReference<Activity>(null);
 
-    public LocationSender(int titleResId, Integer iconResId, Activity activity) {
-        this(activity.getString(titleResId), iconResId, activity);
+    public LocationSender(int titleResId, Integer iconResId, Activity activity, LayerClient layerClient) {
+        this(activity.getString(titleResId), iconResId, activity, layerClient);
     }
 
-    public LocationSender(String title, Integer iconResId, Activity activity) {
-        super(title, iconResId);
+    public LocationSender(String title, Integer iconResId, Activity activity, LayerClient layerClient) {
+        super(activity.getApplicationContext(), layerClient, title, iconResId);
         mActivity = new WeakReference<Activity>(activity);
         init(activity);
     }

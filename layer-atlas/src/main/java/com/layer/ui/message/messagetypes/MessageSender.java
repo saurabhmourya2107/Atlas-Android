@@ -17,7 +17,7 @@ public abstract class MessageSender {
     private Context mContext;
     private LayerClient mLayerClient;
 
-    public void init(Context context, LayerClient layerClient) {
+    public MessageSender(Context context, LayerClient layerClient) {
         mContext = context;
         mLayerClient = layerClient;
     }

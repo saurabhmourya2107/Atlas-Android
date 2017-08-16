@@ -56,7 +56,7 @@
         <item>Many people are typing…</item>
     </string-array>
 
-    <string name="layer_ui_message_composer_hint">Message</string>
-    <string name="layer_ui_message_composer_send_button">SEND</string>
+    <string name="layer_ui_compose_bar_hint">Message</string>
+    <string name="layer_ui_compose_bar_send_button_text">SEND</string>
 
 </resources>

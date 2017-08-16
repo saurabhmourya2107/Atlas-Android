@@ -135,7 +135,7 @@ public class FourPartItemStyle extends ItemStyle {
             mAvatarVisibility = View.GONE;
             mSubtitleVisibility = View.GONE;
 
-            mMarginVertical = ta.getDimension(R.styleable.FourPartItemsListView_marginVertical, resources.getDimension(R.dimen.layer_ui_margin_tiny));
+            mMarginVertical = ta.getDimension(R.styleable.FourPartItemsListView_marginVertical, resources.getDimension(R.dimen.layer_ui_margin_small));
             mTitleTextSize = resources.getDimension(R.dimen.layer_ui_conversation_item_title_tiny);
             mSubtitleTextSize = resources.getDimension(R.dimen.layer_ui_item_subtitle_tiny);
             mSubtitleVisibility = View.GONE;

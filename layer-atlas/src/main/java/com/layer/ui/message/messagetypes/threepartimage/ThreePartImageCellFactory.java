@@ -48,10 +48,10 @@ public class ThreePartImageCellFactory extends
     private final LayerClient mLayerClient;
     private final ImageCacheWrapper mImageCacheWrapper;
 
-    public ThreePartImageCellFactory(LayerClient mLayerClient, ImageCacheWrapper imageCacheWrapper) {
+    public ThreePartImageCellFactory(LayerClient layerClient, ImageCacheWrapper imageCacheWrapper) {
         super(CACHE_SIZE_BYTES);
-        this.mLayerClient = mLayerClient;
-        this.mImageCacheWrapper = imageCacheWrapper;
+        mLayerClient = layerClient;
+        mImageCacheWrapper = imageCacheWrapper;
     }
 
     @Override
