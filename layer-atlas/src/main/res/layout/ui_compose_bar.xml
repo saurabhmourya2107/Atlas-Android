@@ -51,7 +51,7 @@
             android:layout_marginStart="@dimen/layer_ui_margin_tiny"
             android:layout_marginRight="@dimen/layer_ui_margin_tiny"
             android:layout_marginEnd="@dimen/layer_ui_margin_tiny"
-
+            style="@style/Widget.AppCompat.EditText"
             android:hint="@string/layer_ui_compose_bar_hint"
             android:maxLines="5"
             android:minHeight="@dimen/layer_ui_input_height"

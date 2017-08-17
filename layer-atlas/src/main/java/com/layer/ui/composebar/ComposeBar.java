@@ -12,7 +12,6 @@ import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -84,8 +83,8 @@ public class ComposeBar extends FrameLayout implements TextWatcher {
 
     public ComposeBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        parseStyle(context, attrs, defStyleAttr);
         init();
+        parseStyle(context, attrs, defStyleAttr);
         initAttachmentMenu(context, attrs, defStyleAttr);
     }
 
@@ -130,18 +129,7 @@ public class ComposeBar extends FrameLayout implements TextWatcher {
         mEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if (isEnabled()) {
-                    boolean isSendEnabled = mEditText.getText().length() > 0;
-
-                    mEditText.setEnabled(hasFocus);
-                    mEditText.setFocusable(hasFocus);
-
-                    mSendButton.setEnabled(isSendEnabled);
-                } else {
-                    mEditText.setEnabled(false);
-                    mEditText.setFocusable(false);
-                    mSendButton.setEnabled(false);
-                }
+                setEditTextEnabledState(hasFocus);
 
                 if (mExternalEditTextOnFocusChangeListener != null && isEnabled()) {
                     mExternalEditTextOnFocusChangeListener.onFocusChange(view, hasFocus);
@@ -209,6 +197,38 @@ public class ComposeBar extends FrameLayout implements TextWatcher {
             Parcelable parcelable = savedState.get(sender.getClass());
             if (parcelable == null) continue;
             sender.onRestoreInstanceState(parcelable);
+        }
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+
+        setEditTextEnabledState(enabled);
+
+        mLeftButton1.setEnabled(enabled);
+        mLeftButton2.setEnabled(enabled);
+        mLeftButton3.setEnabled(enabled);
+        mDefaultAttachButton.setEnabled(enabled);
+
+        mRightButton1.setEnabled(enabled);
+        mRightButton2.setEnabled(enabled);
+        mRightButton3.setEnabled(enabled);
+        mRightButton4.setEnabled(enabled);
+    }
+
+    protected void setEditTextEnabledState(boolean hasFocus) {
+        if (isEnabled()) {
+            boolean isSendEnabled = mEditText.getText().length() > 0;
+
+            mEditText.setEnabled(hasFocus);
+            mEditText.setFocusable(hasFocus);
+
+            mSendButton.setEnabled(isSendEnabled);
+        } else {
+            mEditText.setEnabled(false);
+            mEditText.setFocusable(false);
+            mSendButton.setEnabled(false);
         }
     }
 
