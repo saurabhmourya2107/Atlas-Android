@@ -15,10 +15,12 @@
 -->
 <resources>
 
+    <color name="transparent">@android:color/transparent</color>
     <color name="layer_ui_color_primary_blue">#FF21AAE1</color>
     <color name="layer_ui_color_dark_blue">#FF1094D0</color>
     <color name="layer_ui_color_primary_gray">#FFEBEBEB</color>
 
+    <color name="layer_ui_color_primary_gray_1">#FFF3F3F3</color>
     <color name="layer_ui_color_primary_gray_3">#FFDADDE4</color>
     <color name="layer_ui_color_primary_gray_5">#FFA4A8B2</color>
 
