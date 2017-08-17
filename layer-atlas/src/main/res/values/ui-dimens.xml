@@ -151,5 +151,6 @@
     <dimen name="layer_ui_compose_bar_button_side_margin">@dimen/layer_ui_margin_small</dimen>
     <dimen name="layer_ui_compose_bar_image_button_height">@dimen/layer_ui_primary_icon_size</dimen>
     <dimen name="layer_ui_compose_bar_image_button_width">@dimen/layer_ui_primary_icon_size</dimen>
+    <dimen name="layer_ui_compose_bar_text_size">@dimen/layer_ui_text_size_input</dimen>
 
 </resources>

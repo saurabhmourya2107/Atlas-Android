@@ -78,6 +78,10 @@
     <!-- Compose Bar -->
     <!-- ########## -->
 
+    <color name="layer_ui_compose_bar_text">@color/layer_ui_text_black</color>
+    <color name="layer_ui_compose_bar_cursor">@color/layer_ui_color_primary_blue</color>
+    <color name="layer_ui_compose_bar_underline">@color/layer_ui_color_primary_blue</color>
+
     <color name="layer_ui_compose_bar_background_enabled">@android:color/white</color>
     <color name="layer_ui_compose_bar_background_disabled">@color/layer_ui_color_primary_gray_5</color>
 

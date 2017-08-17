@@ -84,15 +84,16 @@
     </declare-styleable>
 
     <declare-styleable name="ComposeBar">
-        <attr name="inputTextColor" />
-        <attr name="inputTextSize" />
+        <attr name="android:textColor" />
+        <attr name="android:textSize" />
         <attr name="inputTextTypeface" />
-        <attr name="inputTextStyle" />
+        <attr name="android:textStyle" />
         <attr name="android:enabled" />
         <attr name="inputUnderlineColor" />
         <attr name="inputCursorColor" />
         <attr name="attachmentSendersBackground" format="color|reference" />
-        <attr name="placeHolderText" format="string|reference"/>
+        <attr name="android:hint"/>
+        <attr name="android:maxLines"/>
     </declare-styleable>
 
     <declare-styleable name="MessagesRecyclerView">

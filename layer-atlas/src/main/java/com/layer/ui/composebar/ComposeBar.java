@@ -9,11 +9,13 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +36,7 @@ import com.layer.ui.databinding.UiComposeBarBinding;
 import com.layer.ui.message.messagetypes.AttachmentSender;
 import com.layer.ui.message.messagetypes.MessageSender;
 import com.layer.ui.message.messagetypes.text.TextSender;
+import com.layer.ui.util.EditTextUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,13 +67,7 @@ public class ComposeBar extends FrameLayout implements TextWatcher {
 
     protected PopupWindow mAttachmentMenu;
 
-    // styles
-    protected int mTextColor;
-    protected float mTextSize;
-    protected Typeface mTypeFace;
-    protected int mTextStyle;
-    protected int mUnderlineColor;
-    protected int mCursorColor;
+    // style
     protected Drawable mAttachmentSendersBackground;
 
     public ComposeBar(Context context) {
@@ -83,12 +80,7 @@ public class ComposeBar extends FrameLayout implements TextWatcher {
 
     public ComposeBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
-        parseStyle(context, attrs, defStyleAttr);
-        initAttachmentMenu(context, attrs, defStyleAttr);
-    }
 
-    protected void init() {
         UiComposeBarBinding binding = UiComposeBarBinding.inflate(LayoutInflater.from(getContext()), this, true);
 
         mEditText = binding.layerUiComposeBarEditText;
@@ -136,38 +128,55 @@ public class ComposeBar extends FrameLayout implements TextWatcher {
                 }
             }
         });
-    }
 
-    protected void parseStyle(Context context, AttributeSet attrs, int defStyle) {
-        TypedArray ta = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ComposeBar, R.attr.ComposeBar, defStyle);
-        setEnabled(ta.getBoolean(R.styleable.ComposeBar_android_enabled, true));
-        mTextColor = ta.getColor(R.styleable.ComposeBar_inputTextColor, context.getResources().getColor(R.color.layer_ui_text_black));
-        mTextSize = ta.getDimensionPixelSize(R.styleable.ComposeBar_inputTextSize, context.getResources().getDimensionPixelSize(R.dimen.layer_ui_text_size_input));
-        mTextStyle = ta.getInt(R.styleable.ComposeBar_inputTextStyle, Typeface.NORMAL);
-        String typeFaceName = ta.getString(R.styleable.ComposeBar_inputTextTypeface);
-        mTypeFace = typeFaceName != null ? Typeface.create(typeFaceName, mTextStyle) : null;
-        mUnderlineColor = ta.getColor(R.styleable.ComposeBar_inputUnderlineColor, context.getResources().getColor(R.color.layer_ui_color_primary_blue));
-        mCursorColor = ta.getColor(R.styleable.ComposeBar_inputCursorColor, context.getResources().getColor(R.color.layer_ui_color_primary_blue));
-        mAttachmentSendersBackground = ta.getDrawable(R.styleable.ComposeBar_attachmentSendersBackground);
-        if (mAttachmentSendersBackground == null) {
-            mAttachmentSendersBackground = ContextCompat.getDrawable(context, R.drawable.ui_popup_background);
-        }
-        ta.recycle();
-    }
+        // Attachment Menu
 
-    protected void initAttachmentMenu(Context context, AttributeSet attrs, int defStyle) {
         if (mAttachmentMenu != null) throw new IllegalStateException("Already initialized menu");
 
         if (attrs == null) {
             mAttachmentMenu = new PopupWindow(context);
         } else {
-            mAttachmentMenu = new PopupWindow(context, attrs, defStyle);
+            mAttachmentMenu = new PopupWindow(context, attrs, defStyleAttr);
         }
         mAttachmentMenu.setContentView(LayoutInflater.from(context).inflate(R.layout.ui_compose_bar_attachment_menu, null));
         mAttachmentMenu.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mAttachmentMenu.setOutsideTouchable(true);
-        mAttachmentMenu.setBackgroundDrawable(mAttachmentSendersBackground);
+
         mAttachmentMenu.setFocusable(true);
+
+        parseAndApplyStyle(context, attrs, defStyleAttr);
+    }
+
+    protected void parseAndApplyStyle(Context context, AttributeSet attrs, int defStyle) {
+        TypedArray ta = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ComposeBar, R.attr.ComposeBar, defStyle);
+        setEnabled(ta.getBoolean(R.styleable.ComposeBar_android_enabled, true));
+
+        mEditText.setTextColor(ta.getColor(R.styleable.ComposeBar_android_textColor, context.getResources().getColor(R.color.layer_ui_compose_bar_text)));
+
+        int textSize = ta.getDimensionPixelSize(R.styleable.ComposeBar_android_textSize, context.getResources().getDimensionPixelSize(R.dimen.layer_ui_compose_bar_text_size));
+        mEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+
+        String typeFaceName = ta.getString(R.styleable.ComposeBar_inputTextTypeface);
+        Typeface typeface = typeFaceName != null ? Typeface.create(typeFaceName, ta.getInt(R.styleable.ComposeBar_android_textStyle, Typeface.NORMAL)) : null;
+        mEditText.setTypeface(typeface);
+
+        int underlineColor = ta.getColor(R.styleable.ComposeBar_inputUnderlineColor, context.getResources().getColor(R.color.layer_ui_compose_bar_underline));
+        int cursorColor = ta.getColor(R.styleable.ComposeBar_inputCursorColor, context.getResources().getColor(R.color.layer_ui_compose_bar_cursor));
+
+        EditTextUtil.setCursorDrawableColor(mEditText, cursorColor);
+        EditTextUtil.setUnderlineColor(mEditText, underlineColor);
+
+        Drawable attachmentSendersBackground = ta.getDrawable(R.styleable.ComposeBar_attachmentSendersBackground);
+        if (mAttachmentSendersBackground == null) {
+            mAttachmentSendersBackground = ContextCompat.getDrawable(context, R.drawable.ui_popup_background);
+        }
+
+        mAttachmentMenu.setBackgroundDrawable(attachmentSendersBackground);
+
+        setHint(ta.getString(R.styleable.ComposeBar_android_hint));
+        setMaxLines(ta.getInt(R.styleable.ComposeBar_android_maxLines, 5));
+
+        ta.recycle();
     }
 
     @Override
@@ -355,6 +364,26 @@ public class ComposeBar extends FrameLayout implements TextWatcher {
 
     public void setText(String textToSet) {
         mEditText.setText(textToSet);
+    }
+
+    public void setHint(CharSequence placeHolderText) {
+        mEditText.setHint(placeHolderText);
+    }
+
+    public void setHint(@StringRes int resId) {
+        mEditText.setHint(resId);
+    }
+
+    public CharSequence getHint() {
+        return mEditText.getHint();
+    }
+
+    public void setMaxLines(int maxLines) {
+        mEditText.setMaxLines(maxLines);
+    }
+
+    public int getMaxLines() {
+        return mEditText.getMaxLines();
     }
 
     // TextWatcher
