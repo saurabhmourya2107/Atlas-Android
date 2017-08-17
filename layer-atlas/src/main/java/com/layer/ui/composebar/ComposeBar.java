@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.Editable;
@@ -173,8 +172,8 @@ public class ComposeBar extends FrameLayout implements TextWatcher {
 
         mAttachmentMenu.setBackgroundDrawable(attachmentSendersBackground);
 
-        setHint(ta.getString(R.styleable.ComposeBar_android_hint));
-        setMaxLines(ta.getInt(R.styleable.ComposeBar_android_maxLines, 5));
+        mEditText.setHint(ta.getString(R.styleable.ComposeBar_android_hint));
+        mEditText.setMaxLines(ta.getInt(R.styleable.ComposeBar_android_maxLines, 5));
 
         ta.recycle();
     }
@@ -356,34 +355,6 @@ public class ComposeBar extends FrameLayout implements TextWatcher {
         for (AttachmentSender sender : mAttachmentSenders) {
             sender.setCallback(callback);
         }
-    }
-
-    public String getEnteredText() {
-        return mEditText.getText().toString();
-    }
-
-    public void setText(String textToSet) {
-        mEditText.setText(textToSet);
-    }
-
-    public void setHint(CharSequence placeHolderText) {
-        mEditText.setHint(placeHolderText);
-    }
-
-    public void setHint(@StringRes int resId) {
-        mEditText.setHint(resId);
-    }
-
-    public CharSequence getHint() {
-        return mEditText.getHint();
-    }
-
-    public void setMaxLines(int maxLines) {
-        mEditText.setMaxLines(maxLines);
-    }
-
-    public int getMaxLines() {
-        return mEditText.getMaxLines();
     }
 
     // TextWatcher
